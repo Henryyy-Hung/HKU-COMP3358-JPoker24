@@ -1,18 +1,15 @@
 package client;
 
-import javax.swing.*;
 import jakarta.jms.*;
+import javax.swing.*;
 import javax.swing.SwingUtilities;
 import java.util.List;
 import java.util.ArrayList;
 
-import common.Authenticator;
-import common.ProfileManager;
-import common.User;
+import common.*;
 import jms.*;
-import ui.LoginUI;
-import ui.RegisterUI;
-import ui.GameUI;
+import ui.*;
+
 
 public class GameClient {
 
