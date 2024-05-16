@@ -26,7 +26,7 @@ compile() {
     echo ""
 
     echo "> Compiling the Java code..."
-    javac -cp ":$gf_client_path" -d $bin_dir -sourcepath $src_dir $src_dir/**/*.java
+    javac -cp ":$gf_client_path" -d $bin_dir -sourcepath $src_dir $src_dir/com/**/*.java
     echo ""
 }
 
@@ -59,14 +59,14 @@ start_server() {
     # Check and potentially release the port
     check_and_release_port
     echo "> Starting the Server..."
-    java -cp ":$bin_dir:$mysql_connector_path:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy server.ServerMain
+    java -cp ":$bin_dir:$mysql_connector_path:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy com.server.ServerMain
     echo ""
 }
 
 # Function to start the client
 start_client() {
     echo "> Starting the Client..."
-    java -cp ":$bin_dir:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy client.ClientMain localhost
+    java -cp ":$bin_dir:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy com.client.ClientMain localhost
     echo ""
 }
 
