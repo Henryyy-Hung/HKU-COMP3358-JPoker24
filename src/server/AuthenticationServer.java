@@ -49,8 +49,6 @@ public class AuthenticationServer extends UnicastRemoteObject implements Authent
     public boolean logout(String username) {
         try {
             dbHandler.updateUserOnlineStatusByName(username, false);
-            // test case (remove it when submit)
-            // dbHandler.deleteUserByName(username);
             return true;
         } catch (SQLException e) {
             System.err.println("Database error during logout: " + e.getMessage());

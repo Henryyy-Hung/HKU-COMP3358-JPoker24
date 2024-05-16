@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<domain-info xmlns="http://xmlns.oracle.com/cie/glassfish/domain-info" xmlns:ns2="http://xmlns.oracle.com/cie/glassfish/domain-template" javahome="/opt/tools/java/openjdk/jdk-11/latest" mwhome="/home/jenkins/agent/workspace/glassfish_1-build-and-stage/appserver/distributions/glassfish/target/stage/glassfish6">
+    <domain-template-ref name="Basic GlassFish Server Domain" version="4.0.0.0" location="/home/jenkins/agent/workspace/glassfish_1-build-and-stage/appserver/distributions/glassfish/target/stage/glassfish6/glassfish/common/templates/gf/appserver-domain.jar"/>
+</domain-info>

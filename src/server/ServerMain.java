@@ -7,7 +7,7 @@ public class ServerMain {
     
     public static void main(String[] args) {
         try {
-            // create RMI registry on non-default port 1099
+            // create RMI registry on default port 1099
         	int port = 1099;
             Registry registry = LocateRegistry.createRegistry(port);
             System.out.println("RMI registry created on port " + port + ".");

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.rmi.RemoteException;
+import java.io.InputStream;
 
 import client.GameClient;
 import common.User;
@@ -27,7 +28,12 @@ public class GameUI extends JFrame {
     private JTabbedPane tabbedPane;
     
     private GameClient gameClient;
-    
+
+    private final String IMAGE_PATH_TABLE = "/assets/images/background/table.jpg";
+    private final String IMAGE_PATH_BOARD = "/assets/images/background/board.png";
+    private final String IMAGE_PATH_BUTTON = "/assets/images/background/button.png";
+    private final String IMAGE_PATH_BUTTON_HOVER = "/assets/images/background/button_hover.png";
+
     public GameUI(GameClient gameClient) {
         this.gameClient = gameClient;
         setTitle("JPoker 24-Game");
@@ -118,16 +124,28 @@ public class GameUI extends JFrame {
         tabbedPane.repaint();
     }
 
+    private String getImagePathOfCard(String rank, String suit) {
+        return "/assets/images/cards/" + rank + suit + ".gif";
+    }
+
+    // ensure the access of image after the jar is built
+    private BufferedImage getImage(String path) {
+        BufferedImage image = null;
+        try {
+            InputStream is = getClass().getResourceAsStream(path);
+            image = ImageIO.read(is);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return image;
+    }
+
     private JPanel createUserProfilePanel() {
     	
     	JPanel rootPanel = new JPanel(new GridBagLayout()) {
             BufferedImage bgImage;
             {
-                try {
-                    bgImage = ImageIO.read(new File("assets/images/background/table.jpg"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                bgImage = getImage(IMAGE_PATH_TABLE);
             }
             @Override
             protected void paintComponent(Graphics g) {
@@ -142,11 +160,7 @@ public class GameUI extends JFrame {
         JPanel userInfoPanel =  new JPanel(new GridBagLayout()) {
             BufferedImage bgImage;
             {
-                try {
-                    bgImage = ImageIO.read(new File("assets/images/background/board.png"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                bgImage = getImage(IMAGE_PATH_BOARD);
             }
             @Override
             protected void paintComponent(Graphics g) {
@@ -235,11 +249,7 @@ public class GameUI extends JFrame {
         JPanel rootPanel = new JPanel(new GridBagLayout()) {
             BufferedImage bgImage;
             {
-                try {
-                    bgImage = ImageIO.read(new File("assets/images/background/table.jpg"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                bgImage = getImage(IMAGE_PATH_TABLE);
             }
             @Override
             protected void paintComponent(Graphics g) {
@@ -260,12 +270,8 @@ public class GameUI extends JFrame {
         ImageIcon icon = null;
         ImageIcon hoverIcon = null;
      
-        try{   
-            icon = new ImageIcon(ImageIO.read(new File("assets/images/background/button.png")));
-            hoverIcon = new ImageIcon(ImageIO.read(new File("assets/images/background/button_hover.png")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        icon = new ImageIcon(getImage(IMAGE_PATH_BUTTON));
+        hoverIcon = new ImageIcon(getImage(IMAGE_PATH_BUTTON_HOVER));
 
         JButton startGameButton =  new JButton("Start Game");
         startGameButton.addActionListener(e -> {
@@ -317,11 +323,7 @@ public class GameUI extends JFrame {
         JPanel rootPanel = new JPanel(new GridBagLayout()) {
             BufferedImage bgImage;
             {
-                try {
-                    bgImage = ImageIO.read(new File("assets/images/background/table.jpg"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                bgImage = getImage(IMAGE_PATH_TABLE);
             }
             @Override
             protected void paintComponent(Graphics g) {
@@ -356,11 +358,7 @@ public class GameUI extends JFrame {
         JPanel rootPanel = new JPanel(new GridBagLayout()) {
             BufferedImage bgImage;
             {
-                try {
-                    bgImage = ImageIO.read(new File("assets/images/background/table.jpg"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                bgImage = getImage(IMAGE_PATH_TABLE);
             }
             @Override
             protected void paintComponent(Graphics g) {
@@ -385,13 +383,9 @@ public class GameUI extends JFrame {
 
         ImageIcon icon = null;
         ImageIcon hoverIcon = null;
-
-        try {
-            icon = new ImageIcon(ImageIO.read(new File("assets/images/background/button.png")));
-            hoverIcon = new ImageIcon(ImageIO.read(new File("assets/images/background/button_hover.png")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+     
+        icon = new ImageIcon(getImage(IMAGE_PATH_BUTTON));
+        hoverIcon = new ImageIcon(getImage(IMAGE_PATH_BUTTON_HOVER));
 
         JButton nextGameButton =  new JButton("New Game");
         nextGameButton.addActionListener(e -> {
@@ -445,11 +439,7 @@ public class GameUI extends JFrame {
         JPanel rootPanel = new JPanel(new BorderLayout(20, 0)) {
             BufferedImage bgImage;
             {
-                try {
-                    bgImage = ImageIO.read(new File("assets/images/background/table.jpg"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                bgImage = getImage(IMAGE_PATH_TABLE);
             }
             @Override
             protected void paintComponent(Graphics g) {
@@ -480,11 +470,9 @@ public class GameUI extends JFrame {
             int rank = (cards[i]-1) % 13; // suppose cards[i] is 1-indexed, from 1 to 13
             int suit = i;
 
-            ImageIcon cardIcon = ImageIcon.class.cast(null);
-            try {
-                cardIcon = new ImageIcon(ImageIO.read(new File("assets/images/cards/" + ranks[rank] + suits[suit] + ".gif")));
-            } catch (IOException e) {
-                e.printStackTrace();
+            ImageIcon cardIcon = new ImageIcon(getImage(getImagePathOfCard(ranks[rank], suits[suit])));
+            if (cardIcon == null) {
+                cardIcon = ImageIcon.class.cast(null);
             }
             JLabel cardLabel = new JLabel(cardIcon);
             cardLabel.setOpaque(false);
@@ -513,11 +501,7 @@ public class GameUI extends JFrame {
             JPanel playerPanel = new JPanel() {
                 BufferedImage bgImage;
                 {
-                    try {
-                        bgImage = ImageIO.read(new File("assets/images/background/board.png"));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    bgImage = getImage(IMAGE_PATH_BOARD);
                 }
                 @Override
                 protected void paintComponent(Graphics g) {

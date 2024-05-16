@@ -2,8 +2,13 @@
 
 # Define string variables
 port_number="1099"
-gf_client_path="/home/u3035782750/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar"
-mysql_connector_path="/home/u3035782750/java/mysql-connector-j-8.4.0.jar"
+# gf_client_path="/home/u3035782750/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar"
+# mysql_connector_path="/home/u3035782750/java/mysql-connector-j-8.4.0.jar"
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+gf_client_path="$SCRIPT_DIR/lib/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar"
+mysql_connector_path="$SCRIPT_DIR/lib/mysql-connector-j_8.4.0-1ubuntu22.04_all/usr/share/java/mysql-connector-j-8.4.0.jar"
+
 bin_dir="bin"
 src_dir="src"
 security_policy="policy/security.policy"
