@@ -53,9 +53,15 @@ public class LoginUI extends JFrame {
                     switch (status) {
                         case SUCCESS:
                             JOptionPane.showMessageDialog(this, "Login successful!");
-                            User user = gameClient.getProfileManager().getUser(username, password);
-                            gameClient.setUser(user);
+                            // initialize user and top users for display of information
+                            gameClient.initUser(username, password);
+                            gameClient.printUserInfo();
                             gameClient.updateTopUsers();
+                            if (gameClient.getUser() == null) {
+                                JOptionPane.showMessageDialog(this, "Failed to initialize user!");
+                                return;
+                            }
+                            // show game UI
                             SwingUtilities.invokeLater(() -> {
                                 gameClient.disposeLoginUI();
                                 gameClient.getGameUI().setVisible(true);

@@ -22,9 +22,7 @@ import utils.ExpressionEvaluator;
 import utils.ExpressionValidator;
 
 public class GameUI extends JFrame {
-    private JPanel userProfilePanel;
-    private JPanel playGamePanel;
-    private JPanel leaderBoardPanel;
+
     private JButton logoutButton;
     private JTabbedPane tabbedPane;
     
@@ -40,9 +38,9 @@ public class GameUI extends JFrame {
         tabbedPane = new JTabbedPane();
         add(tabbedPane, BorderLayout.CENTER);
 
-        this.userProfilePanel = createUserProfilePanel();
-        this.playGamePanel = createPlayGamePanel();
-        this.leaderBoardPanel = createLeaderBoardPanel();
+        JPanel userProfilePanel = createUserProfilePanel();
+        JPanel playGamePanel = createPlayGamePanel();
+        JPanel leaderBoardPanel = createLeaderBoardPanel();
 
         Insets insets = new Insets(6, 4, 3, 4);
         Font font = new Font("Arial", Font.BOLD, 14);
@@ -102,6 +100,24 @@ public class GameUI extends JFrame {
         tabbedPane.repaint();
     }
 
+    public void updateUserProfilePanel() {
+        JPanel nextPanel = createUserProfilePanel();
+        tabbedPane.setComponentAt(tabbedPane.indexOfTab("User Profile"), nextPanel);
+        nextPanel.revalidate();
+        nextPanel.repaint();
+        tabbedPane.revalidate();
+        tabbedPane.repaint();
+    }
+
+    public void updateUserLeaderBoardPanel() {
+        JPanel nextPanel = createLeaderBoardPanel();
+        tabbedPane.setComponentAt(tabbedPane.indexOfTab("Leader Board"), nextPanel);
+        nextPanel.revalidate();
+        nextPanel.repaint();
+        tabbedPane.revalidate();
+        tabbedPane.repaint();
+    }
+
     private JPanel createUserProfilePanel() {
     	
     	JPanel rootPanel = new JPanel(new GridBagLayout()) {
@@ -141,42 +157,56 @@ public class GameUI extends JFrame {
             }
         };
         userInfoPanel.repaint();
-
         userInfoPanel.setOpaque(false);
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);  
         gbc.anchor = GridBagConstraints.LINE_START;
-        
+
+        String username = "";
+        String numOfGamesWon = "";
+        String numOfGamesPlayed = "";
+        String avgWinningTime = "";
+        String rank = "";
+
+        User player = gameClient.getUser();
+        if (player != null) {
+            username = player.getUsername() + "";
+            numOfGamesWon = player.getNumOfGamesWon() + "";
+            numOfGamesPlayed = player.getNumOfGamesPlayed() + "";
+            avgWinningTime = String.format("%.2f", player.getAvgWinningTime()) + "s";
+            rank = "#" + player.getRank();
+        }
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         userInfoPanel.add(new JLabel("Name:"), gbc);
         gbc.gridx = 1;
-        userInfoPanel.add(new JLabel(gameClient.getUser().getUsername() + ""), gbc);
+        userInfoPanel.add(new JLabel(username), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
         userInfoPanel.add(new JLabel("Number of wins:"), gbc);
         gbc.gridx = 1;
-        userInfoPanel.add(new JLabel(gameClient.getUser().getNumOfGamesWon() + ""), gbc);
+        userInfoPanel.add(new JLabel(numOfGamesWon + ""), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         userInfoPanel.add(new JLabel("Number of games:"), gbc);
         gbc.gridx = 1;
-        userInfoPanel.add(new JLabel(gameClient.getUser().getNumOfGamesPlayed() + ""), gbc);
+        userInfoPanel.add(new JLabel(numOfGamesPlayed + ""), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
         userInfoPanel.add(new JLabel("Average time to win:"), gbc);
         gbc.gridx = 1;
-        userInfoPanel.add(new JLabel(gameClient.getUser().getAvgWinningTime() + "s"), gbc);
+        userInfoPanel.add(new JLabel(avgWinningTime), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
         userInfoPanel.add(new JLabel("Rank:"), gbc);
         gbc.gridx = 1;
-        userInfoPanel.add(new JLabel("#" + gameClient.getUser().getRank()), gbc);
+        userInfoPanel.add(new JLabel(rank), gbc);
 
         for (Component comp : userInfoPanel.getComponents()) {
             if (comp instanceof JLabel) {
@@ -505,9 +535,18 @@ public class GameUI extends JFrame {
             playerInfoGbc.gridx = 0;
             playerInfoGbc.gridy = 0;
             playerInfoGbc.insets = new Insets(0, 0, 8, 0);
+
+            User player = players.get(i);
+
+            String name = player.getUsername();
+            if (this.gameClient.getUser().getUsername().equals(name)) {
+                name = "• " + name + " •";
+            }
+
+            String stat = "Win: " + player.getNumOfGamesWon() + "/" + player.getNumOfGamesPlayed() + " Avg: " + String.format("%.1f", player.getAvgWinningTime()) + "s";
             
-            JLabel nameLabel = new JLabel(players.get(i).getUsername());
-            JLabel statsLabel = new JLabel("Win: 20/35 avg: 10.4s");
+            JLabel nameLabel = new JLabel(name);
+            JLabel statsLabel = new JLabel(stat);
 
             playerPanel.add(nameLabel, playerInfoGbc);
             playerInfoGbc.gridy++;
@@ -585,7 +624,7 @@ public class GameUI extends JFrame {
             data[i][1] = " " + user.getUsername();
             data[i][2] = " " + user.getNumOfGamesWon();
             data[i][3] = " " + user.getNumOfGamesPlayed();
-            data[i][4] = " " + user.getAvgWinningTime() + "s";
+            data[i][4] = " " + String.format("%.2f", user.getAvgWinningTime()) + "s";
         }
 
         JPanel rootPanel = new JPanel(new BorderLayout());

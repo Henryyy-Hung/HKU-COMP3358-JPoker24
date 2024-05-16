@@ -21,9 +21,9 @@ public class GameSessionManager {
         this.connectionFactory = connectionFactory;
         this.gameTopic = gameTopic;
         try {
-            gameDatabaseHandler = new GameDatabaseHandler();
+            this.gameDatabaseHandler = new GameDatabaseHandler();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Database connection failed: " + e.getMessage());
         }
     }
 
@@ -81,5 +81,11 @@ public class GameSessionManager {
             e.printStackTrace();
         }
         return sessionId;
+    }
+
+    public void close() {
+        for (GameSession session : sessions.values()) {
+            session.close();
+        }
     }
 }

@@ -22,9 +22,10 @@ public class GameManager implements MessageProcessor {
     private Queue gameQueue;
     private Topic gameTopic;
 
-    private GameMessageSender queueMessageSender;
-    private GameMessageReceiver topicMessageReceiver;
-    private GameMessageReceiver queueMessageReceiver;
+    private GameMessageSender queueMessageSender;           // send messages to the server for p2p communication
+    private GameMessageReceiver queueMessageReceiver;       // receive messages from the server for p2p communication
+    private GameMessageReceiver topicMessageReceiver;       // receive messages from the server for game session communication
+    private GameMessageReceiver broadcastMessageReceiver;   // receive messages from the server for broadcast communication
 
     private String sessionId;
 
@@ -58,6 +59,15 @@ public class GameManager implements MessageProcessor {
         new Thread(topicMessageReceiver).start();
     }
 
+    public void initBroadcastMessageReceiver() throws Exception {
+        if (broadcastMessageReceiver != null) {
+            broadcastMessageReceiver.close();
+        }
+        String selector = "ReceiverID = 'all'";         // username must with length > 4, thus safe to use 'all' as receiver id
+        this.broadcastMessageReceiver = new GameMessageReceiver(this.connectionFactory, this.gameTopic, selector, this);
+        new Thread(broadcastMessageReceiver).start();
+    }
+
     public void dropTopicMessageReceiver() throws JMSException {
         if (topicMessageReceiver != null) {
             topicMessageReceiver.close();
@@ -89,6 +99,11 @@ public class GameManager implements MessageProcessor {
                     this.handleGameEnd(gameMessage);
                     break;
                 }
+                case UPDATE_LEADERBOARD: {
+                    System.out.println("- This is a UPDATE_LEADERBOARD message");
+                    this.handleUpdateLeaderboard(gameMessage);
+                    break;
+                }
                 default:
                     break;
             }
@@ -117,8 +132,14 @@ public class GameManager implements MessageProcessor {
     }
 
     private void handleGameEnd(GameMessage gameMessage) {
+        // update ui
         SwingUtilities.invokeLater(() -> {
             this.gameClient.getGameUI().proceedGamePanel_gameOver(gameMessage.getWinner().getUsername(), gameMessage.getSolution());
+        });
+        // update information
+        this.gameClient.updateUser();
+        SwingUtilities.invokeLater(() -> {
+            this.gameClient.getGameUI().updateUserProfilePanel();
         });
         // Drop the topic message receiver for the terminated game session
         try {
@@ -128,6 +149,13 @@ public class GameManager implements MessageProcessor {
             e.printStackTrace();
         }
         this.sessionId = null;
+    }
+
+    private void handleUpdateLeaderboard(GameMessage gameMessage) {
+        this.gameClient.updateTopUsers();
+        SwingUtilities.invokeLater(() -> {
+            this.gameClient.getGameUI().updateUserLeaderBoardPanel();
+        });
     }
 
     private GameMessage initGameMessageToServer() {
@@ -183,6 +211,9 @@ public class GameManager implements MessageProcessor {
         }
         if (queueMessageReceiver != null) {
             queueMessageReceiver.close();
+        }
+        if (broadcastMessageReceiver != null) {
+            broadcastMessageReceiver.close();
         }
     }
 }

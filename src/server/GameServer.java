@@ -143,5 +143,6 @@ public class GameServer implements MessageProcessor {
         if (queueMessageReceiver != null) {
             queueMessageReceiver.close();
         }
+        this.sessionManager.close();
     }
 }

@@ -61,9 +61,14 @@ public class RegisterUI extends JFrame {
                     switch (status) {
                         case SUCCESS:
                             JOptionPane.showMessageDialog(this, "Registration successful!");
-                            User user = gameClient.getProfileManager().getUser(username, password);
-                            gameClient.setUser(user);
+                            // initialize user and top users for display of information
+                            gameClient.initUser(username, password);
                             gameClient.updateTopUsers();
+                            if (gameClient.getUser() == null) {
+                                JOptionPane.showMessageDialog(this, "Failed to initialize user!");
+                                return;
+                            }
+                            // show game UI
                             SwingUtilities.invokeLater(() -> {
                                 gameClient.disposeRegisterUI();
                                 gameClient.getGameUI().setVisible(true);

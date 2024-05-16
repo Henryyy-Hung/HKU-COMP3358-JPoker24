@@ -1,6 +1,7 @@
 package enums;
 
 public enum GameMessageType {
+    // For Game Session Communication
     // From Client
     JOIN_GAME,
     REDAY_FOR_GAME,
@@ -9,4 +10,6 @@ public enum GameMessageType {
     SESSION_READY,
     GAME_START,
     GAME_END,
+    // For Common Communication
+    UPDATE_LEADERBOARD,
 }

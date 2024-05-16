@@ -220,6 +220,8 @@ public class GameSession implements Serializable {
             e.printStackTrace();
             return;
         }
+        // update the leaderboard of all online users
+        broadcastUpdateLeaderboard();
         this.terminate();
     }
 
@@ -229,6 +231,19 @@ public class GameSession implements Serializable {
             users.add(player.user);
         }
         return users;
+    }
+
+    private void broadcastUpdateLeaderboard() {
+        GameMessage message = new GameMessage();
+        message.setType(GameMessageType.UPDATE_LEADERBOARD);
+        message.setSenderId("server");
+        message.setReceiverId("all");
+        message.setMessage("Update leaderboard");
+        try {
+            messageSender.sendMessage(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private GameMessage initGameMessageToPlayers() {
@@ -253,9 +268,20 @@ public class GameSession implements Serializable {
         try {
             this.status = GameSessionStatus.GAME_ENDED;
             messageSender.close();
+            this.messageSender = null;
             this.gameSessionManager.removeSession(this.sessionId);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void close() {
+        if (messageSender != null) {
+            try {
+                messageSender.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

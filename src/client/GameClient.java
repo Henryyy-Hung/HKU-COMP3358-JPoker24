@@ -16,17 +16,21 @@ import ui.GameUI;
 
 public class GameClient {
 
+    // Function with RMI Remote Services
     private Authenticator auth;
     private ProfileManager profile;
 
-    private LoginUI loginUI;
-    private RegisterUI registerUI;
-    private GameUI gameUI;
+    // Game Manager with JMS Messaging Services
+    private GameManager gameManager;
 
+    // User Information & Top Users
     private User user;
     private List<User> topUsers;
 
-    private GameManager gameManager;
+    // UIs of the Game
+    private LoginUI loginUI;
+    private RegisterUI registerUI;
+    private GameUI gameUI;
 
     public GameClient(Authenticator auth, ProfileManager profile) throws Exception {
         // authenticator
@@ -69,6 +73,54 @@ public class GameClient {
         return gameManager;
     }
 
+    public void initUser(String username, String password) {
+        try {
+            this.user = this.getProfileManager().getUser(username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void updateUser() {
+        // only update user if user is not null (i.e. user has logged in)
+        String username = this.user.getUsername();
+        String password = this.user.getPassword();
+        if (username == null || password == null) {
+            return;
+        }
+        try {
+            this.user = this.getProfileManager().getUser(username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // for debug only
+    public void printUserInfo() {
+        if (this.user == null) {
+            System.out.println("User is null.");
+            return;
+        }
+
+        System.out.println("Username: " + this.user.getUsername());
+
+        System.out.println("Password: " + this.user.getPassword());
+
+        System.out.println("Is Online: " + this.user.isOnline());
+
+        System.out.println("Number of games won: " + this.user.getNumOfGamesWon());
+
+        System.out.println("Number of games played: " + this.user.getNumOfGamesPlayed());
+
+        System.out.println("Average winning time: " + this.user.getAvgWinningTime());
+
+        System.out.println("Rank: " + this.user.getRank());
+    }
+
     public List<User> getTopUsers() {
         return topUsers;
     }
@@ -98,11 +150,20 @@ public class GameClient {
     public GameUI getGameUI() {
         if (this.gameUI == null && this.user != null) {
             this.gameUI = new GameUI(this);
-            try {
-                this.gameManager.initQueueMessageReceiver(this.user.getUsername());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            new Thread(() -> {
+                try {
+                    this.gameManager.initQueueMessageReceiver(this.user.getUsername());
+                } catch (Exception e) {
+                    System.out.println("Failed to initialize queue message receiver.");
+                    e.printStackTrace();
+                }
+                try {
+                    this.gameManager.initBroadcastMessageReceiver();
+                } catch (Exception e) {
+                    System.out.println("Failed to initialize broadcast message receiver.");
+                    e.printStackTrace();
+                }
+            }).start();
         }
         return gameUI;
     }
@@ -129,13 +190,5 @@ public class GameClient {
             this.gameUI.dispose();
             this.gameUI = null;
         }
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public User getUser() {
-        return user;
     }
 }

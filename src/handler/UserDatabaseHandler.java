@@ -69,17 +69,25 @@ public class UserDatabaseHandler {
 
     public User getUserByNameWithGameInfo(String username) {
         String sql = "SELECT u.name, u.password, u.is_online, " +
-                     "COUNT(p.game_id) AS gamesPlayed, " +
-                     "SUM(p.is_winner) AS gamesWon, " +
-                     "AVG(CASE WHEN p.is_winner = TRUE THEN g.completion_time ELSE NULL END) AS avgWinTime, " +
-                     "RANK() OVER (ORDER BY SUM(p.is_winner) DESC) AS `rank` " +
-                     "FROM Users u " +
-                     "LEFT JOIN Participations p ON u.name = p.user_name " +
-                     "LEFT JOIN Games g ON p.game_id = g.id " +
-                     "WHERE u.name = ? " +
-                     "GROUP BY u.name";
+                    "COALESCE(t.gamesPlayed, 0) AS gamesPlayed, " +
+                    "COALESCE(t.gamesWon, 0) AS gamesWon, " +
+                    "COALESCE(t.avgWinTime, 0) AS avgWinTime, " +
+                    "COALESCE(t.rank, -1) AS `rank` " +
+                    "FROM Users u " +
+                    "LEFT JOIN ( " +
+                    "    SELECT p.user_name, " +
+                    "    COUNT(p.game_id) AS gamesPlayed, " +
+                    "    SUM(p.is_winner) AS gamesWon, " +
+                    "    AVG(CASE WHEN p.is_winner = TRUE THEN g.completion_time ELSE NULL END) AS avgWinTime, " +
+                    "    DENSE_RANK() OVER (ORDER BY SUM(p.is_winner) DESC) AS `rank` " +
+                    "    FROM Participations p " +
+                    "    LEFT JOIN Games g ON p.game_id = g.id " +
+                    "    GROUP BY p.user_name " +
+                    ") t ON u.name = t.user_name " +
+                    "WHERE u.name = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            conn.setAutoCommit(false); // Start transaction
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -87,9 +95,20 @@ public class UserDatabaseHandler {
                 int gamesWon = rs.getInt("gamesWon");
                 double avgWinTime = rs.getDouble("avgWinTime");
                 int rank = rs.getInt("rank");
-                
-                if (rs.wasNull()) {
-                    avgWinTime = 0;  // Handle case where no games have been won.
+
+                // handle the case if the user didn't have any participation records
+                if (rank == -1) {
+                    String rankSql = "SELECT COALESCE(MAX(`rank`), 0) AS maxRank " +
+                                     "FROM ( " +
+                                     "    SELECT DENSE_RANK() OVER (ORDER BY SUM(is_winner) DESC) AS `rank` " +
+                                     "    FROM Participations GROUP BY user_name " + 
+                                     ") sub";
+                    try (PreparedStatement rankStmt = conn.prepareStatement(rankSql)) {
+                        ResultSet rankRs = rankStmt.executeQuery();
+                        if (rankRs.next()) {
+                            rank = rankRs.getInt("maxRank") + 1;
+                        }
+                    }
                 }
 
                 User user = new User(
@@ -101,24 +120,36 @@ public class UserDatabaseHandler {
                     avgWinTime,
                     rank
                 );
+                conn.commit(); // Commit transaction
                 return user;
             }
         } catch (SQLException e) {
             System.err.println("Error fetching user with full info: " + e.getMessage());
+            try {
+                conn.rollback(); // Rollback in case of error
+            } catch (SQLException ex) {
+                System.err.println("Transaction rollback failed: " + ex.getMessage());
+            }
+        } finally {
+            try {
+                conn.setAutoCommit(true); // Reset auto-commit setting
+            } catch (SQLException e) {
+                System.err.println("Error resetting auto-commit: " + e.getMessage());
+            }
         }
         return null;
     }
 
     public List<User> getTopNUsersWithGameInfo(int n) {
         String sql = "SELECT u.name, u.password, u.is_online, " +
-                     "COUNT(p.game_id) AS gamesPlayed, " +
-                     "SUM(p.is_winner) AS gamesWon, " +
-                     "AVG(CASE WHEN p.is_winner = TRUE THEN g.completion_time ELSE NULL END) AS avgWinTime " +
+                     "COALESCE(COUNT(p.game_id), 0) AS gamesPlayed, " +
+                     "COALESCE(SUM(p.is_winner), 0) AS gamesWon, " +
+                     "COALESCE(AVG(CASE WHEN p.is_winner = TRUE THEN g.completion_time ELSE NULL END), 0) AS avgWinTime " +
                      "FROM Users u " +
                      "LEFT JOIN Participations p ON u.name = p.user_name " +
                      "LEFT JOIN Games g ON p.game_id = g.id " +
                      "GROUP BY u.name " +
-                     "ORDER BY SUM(p.is_winner) DESC " +
+                     "ORDER BY SUM(p.is_winner) DESC, COALESCE(AVG(CASE WHEN p.is_winner = TRUE THEN g.completion_time ELSE NULL END), 0) ASC " +
                      "LIMIT ?";
 
         List<User> topUsers = new ArrayList<>();
@@ -130,11 +161,11 @@ public class UserDatabaseHandler {
                 int gamesPlayed = rs.getInt("gamesPlayed");
                 int gamesWon = rs.getInt("gamesWon");
                 double avgWinTime = rs.getDouble("avgWinTime");
-                
-                if (rs.wasNull()) {
-                    avgWinTime = 0;  // Handle case where no games have been won.
-                }
 
+                // Increment rank if the number of games won is less than the previous user
+                if (topUsers.size() > 0 && gamesWon < topUsers.get(topUsers.size() - 1).getNumOfGamesWon()) {
+                    rank++;
+                }
                 User user = new User(
                     rs.getString("name"),
                     rs.getString("password"),
@@ -142,7 +173,7 @@ public class UserDatabaseHandler {
                     gamesWon,
                     gamesPlayed,
                     avgWinTime,
-                    rank++
+                    rank
                 );
                 topUsers.add(user);
             }
