@@ -1,0 +1,9 @@
+grant {
+	permission java.net.SocketPermission "*:1024-65535", "connect,accept";
+	permission java.net.SocketPermission "*:80", "connect";
+    permission java.io.FilePermission "data/UserInfo.txt", "read,write";
+    permission java.io.FilePermission "data/OnlineUser.txt", "read,write";
+    permission java.util.PropertyPermission "*", "read,write";
+    permission java.lang.RuntimePermission "createSecurityManager";
+	permission java.security.AllPermission;
+};
