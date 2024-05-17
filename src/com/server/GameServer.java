@@ -42,19 +42,19 @@ public class GameServer implements MessageProcessor {
         if (message instanceof GameMessage) {
             // cast the message to GameMessage
             GameMessage gameMessage = (GameMessage) message;
-            System.out.print("> Received message: from " + gameMessage.getSenderId() + " ");
+            System.out.println("\n> Message received from " + gameMessage.getSenderId());
             // handle different message types using switch case
             switch (gameMessage.getType()) {
                 case JOIN_GAME:
-                    System.out.println("- This is a JOIN_GAME message");
+                    System.out.println("- Player " + gameMessage.getSenderId() + " request to join the game");
                     this.handleJoinGame(gameMessage);
                     break;
                 case REDAY_FOR_GAME:
-                    System.out.println("- This is a READY_FOR_GAME message");
+                    System.out.println("- Player " + gameMessage.getSenderId() + " is ready for the game");
                     this.handleReadyForGame(gameMessage);
                     break;
                 case SUBMIT_ANSWER:
-                    System.out.println("- This is a SUBMIT_ANSWER message");
+                    System.out.println("- Player " + gameMessage.getSenderId() + " submitted an answer");
                     this.handleSubmitAnswer(gameMessage);
                     break;
                 default:
@@ -75,7 +75,7 @@ public class GameServer implements MessageProcessor {
         }
         // add the user to an available session and get the session id
         String sessionId = sessionManager.addUserToAvailableSession(gameMessage.getPlayer());
-        System.out.println("- Assigned session id: " + sessionId);
+        System.out.println("- Game session assigned to player " + gameMessage.getSenderId() + ": " + sessionId);
         // prepare a response message
         GameMessage response = new GameMessage();
         response.setType(GameMessageType.SESSION_READY);

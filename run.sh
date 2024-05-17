@@ -2,16 +2,20 @@
 
 # Define string variables
 port_number="1099"
-# gf_client_path="/home/u3035782750/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar"
-# mysql_connector_path="/home/u3035782750/java/mysql-connector-j-8.4.0.jar"
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-gf_client_path="lib/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar"
-mysql_connector_path="lib/mysql-connector-j_8.4.0-1ubuntu22.04_all/usr/share/java/mysql-connector-j-8.4.0.jar"
+server_jar="JPoker24GameServer.jar"
+client_jar="JPoker24Game.jar"
 
 bin_dir="bin"
+lib_dir="lib"
 src_dir="src"
-security_policy="policy/security.policy"
+build_dir="build"
+
+security_policy_path="policy/security.policy"
+gf_client_path="$lib_dir/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar"
+mysql_connector_path="$lib_dir/mysql-connector-j_8.4.0-1ubuntu22.04_all/usr/share/java/mysql-connector-j-8.4.0.jar"
+server_jar_path="$build_dir/$server_jar"
+client_jar_path="$build_dir/$client_jar"
 
 # Check for user input
 if [ "$#" -eq 0 ]; then
@@ -22,6 +26,7 @@ fi
 # Function to compile code
 compile() {
     echo "> Removing existing built classes..."
+    mkdir -p $bin_dir
     rm -rf $bin_dir/*
     echo ""
 
@@ -33,7 +38,7 @@ compile() {
 # Check availability of the port and kill the process using it if necessary
 check_and_release_port() {
     echo "> Checking availability of port $port_number..."
-    echo "Enter password to check for occupied ports."
+    echo "Enter password to check for occupied ports and release them if necessary."
     # Filter for TCP connections on the specified port
     local netstat_output=$(sudo netstat -tulpn | grep "tcp.*:$port_number ")
     if [ ! -z "$netstat_output" ]; then
@@ -60,14 +65,30 @@ start_server() {
     # Check and potentially release the port
     check_and_release_port
     echo "> Starting the Server..."
-    java -cp ":$bin_dir:$mysql_connector_path:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy com.server.ServerMain
+    java -cp ":$bin_dir:$mysql_connector_path:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy_path com.server.ServerMain
     echo ""
 }
 
 # Function to start the client
 start_client() {
     echo "> Starting the Client..."
-    java -cp ":$bin_dir:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy com.client.ClientMain localhost
+    java -cp ":$bin_dir:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy_path com.client.ClientMain localhost
+    echo ""
+}
+
+# Function to start the server in jar
+start_server_jar() {
+    # Check and potentially release the port
+    check_and_release_port
+    echo "> Starting the $server_jar..."
+    java -cp "$server_jar_path:$mysql_connector_path:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy_path com.server.ServerMain
+    echo ""
+}
+
+# Function to start the client in jar
+start_client_jar() {
+    echo "> Starting the $client_jar..."
+    java -cp "$client_jar_path:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy_path com.client.ClientMain localhost
     echo ""
 }
 
@@ -83,6 +104,7 @@ build() {
     mkdir -p temp_jar/client/com
     mkdir -p temp_jar/server/META-INF
     mkdir -p temp_jar/server/com
+    mkdir -p build
 
     # Copy compiled classes and resources specifically for the client
     cp -r bin/com/{client,common,enums,jms,ui,utils} temp_jar/client/com
@@ -96,7 +118,7 @@ build() {
     cp -r src/com/{client,common,enums,jms,ui,utils} temp_jar/client/com
 
     # Package the client JAR
-    (cd temp_jar/client && jar cvfm ../../JPoker24Game.jar META-INF/MANIFEST.MF .)
+    (cd temp_jar/client && jar cvfm $client_jar META-INF/MANIFEST.MF .)
 
     # Copy compiled classes and resources specifically for the server
     cp -r bin/com/{common,enums,handler,jms,server,utils} temp_jar/server/com
@@ -109,7 +131,11 @@ build() {
     cp -r src/com/{common,enums,handler,jms,server,utils} temp_jar/server/com
 
     # Package the server JAR
-    (cd temp_jar/server && jar cvfm ../../JPoker24GameServer.jar META-INF/MANIFEST.MF .)
+    (cd temp_jar/server && jar cvfm $server_jar META-INF/MANIFEST.MF .)
+
+    # Move the JAR files to the build directory
+    mv temp_jar/client/$client_jar build
+    mv temp_jar/server/$server_jar build
 
     # Clean up temporary directory
     rm -rf temp_jar
@@ -122,6 +148,9 @@ command="$1"
 if [ -n "$2" ]; then
     command="$command $2"
 fi
+if [ -n "$3" ]; then
+    command="$command $3"
+fi
 case "$command" in
     "release port")
         check_and_release_port
@@ -129,10 +158,10 @@ case "$command" in
     "compile")
         compile
         ;;
-    "server")
+    "java server")
         start_server
         ;;
-    "client")
+    "java client")
         start_client
         ;;
     "compile server")
@@ -146,9 +175,23 @@ case "$command" in
     "build")
         build
         ;;
+    "jar server")
+        start_server_jar
+        ;;
+    "jar client")
+        start_client_jar
+        ;;
+    "build server")
+        build
+        start_server_jar
+        ;;
+    "build client")
+        build
+        start_client_jar
+        ;;
     *)
         echo "Invalid argument: $command"
-        echo "Usage: $0 compile|server|client|'compile server'|'compile client'"
+        echo "Usage: $0 compile|server|client|'compile server'|'compile client'|'build server'|'build client'"
         exit 2
         ;;
 esac

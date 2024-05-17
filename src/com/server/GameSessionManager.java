@@ -33,7 +33,7 @@ public class GameSessionManager {
         try {
             gameId = gameDatabaseHandler.createEmptyGame();
         } catch (SQLException e) {
-            throw new Exception("Failed to create a new game in the database.");
+            throw new Exception("- Failed to create a new game entity in the database.");
         }
         // Create a new session ID
         String sessionId = java.util.UUID.randomUUID().toString();
@@ -42,12 +42,20 @@ public class GameSessionManager {
         try {
             messageSender = new GameMessageSender(connectionFactory, gameTopic);
         } catch (JMSException e) {
-            throw new Exception("Failed to create a new message sender for the game.");
+            throw new Exception("- Failed to create a new message sender for the game.");
         }
         // Create a new game session
         GameSession session = new GameSession(this, gameId, sessionId, messageSender);
         // Add the session to the session map
         sessions.put(sessionId, session);
+        // Print out the session information
+        System.out.println("- Number of existing sessions: " + sessions.size());
+        String sessionList = "";
+        for (String key : sessions.keySet()) {
+            sessionList += key.substring(key.length() - 4) + ", ";
+        }
+        sessionList = sessionList.substring(0, sessionList.length() - 2);
+        System.out.println("- Existing sessions: " + sessionList);
         return sessionId;
     }
 
@@ -57,6 +65,7 @@ public class GameSessionManager {
 
     public void removeSession(String sessionId) {
         sessions.remove(sessionId);
+        System.out.println("- Existing session removed: " + sessionId);
     }
 
     public GameDatabaseHandler getGameDatabaseHandler() {

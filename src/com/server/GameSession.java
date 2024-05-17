@@ -69,9 +69,12 @@ public class GameSession implements Serializable {
                 if (players.size() > 1 && status == GameSessionStatus.WAITING_FOR_PLAYERS_TO_JOIN) {
                     // Diable further player from joining
                     status = GameSessionStatus.WAITING_FOR_PLAYERS_TO_READY;
+                    System.out.println("\n> 10 seconds elapsed for session: " + sessionId);
+                    System.out.println("- Minimum number of players reached for session: " + sessionId);
+                    System.out.println("- Session moved to the next stage: WAITING_FOR_PLAYERS_TO_READY");
                     // If all players are ready, start the game
                     if (allPlayersReady()) {
-                        System.out.println("- Session " + sessionId + " has waited for 10 seconds");
+                        System.out.println("- All players are ready for session: " + sessionId);
                         startGame();
                     }
                     // If not all players are ready, wait for them to be ready, and trigger the game start later
@@ -79,6 +82,9 @@ public class GameSession implements Serializable {
             }
         };
         timer.schedule(task, 10000);
+
+        System.out.println("- New session created: " + sessionId);
+        System.out.println("- Session initiate with status: WAITING_FOR_PLAYERS_TO_JOIN");
     }
 
     private boolean allPlayersReady() {
@@ -107,6 +113,14 @@ public class GameSession implements Serializable {
         long secondsSinceCreation = (System.currentTimeMillis() - creationTime) / 1000;
         if (players.size() == 4 || (players.size() > 1 && secondsSinceCreation >= 10)) {
             this.status = GameSessionStatus.WAITING_FOR_PLAYERS_TO_READY;
+            if (players.size() == 4) {
+                System.out.println("- Maximum number of players reached for session: " + sessionId);
+            }
+            if (players.size() > 1 && secondsSinceCreation >= 10) {
+                System.out.println("- 10 seconds elapsed for session: " + sessionId);
+                System.out.println("- Minimum number of players reached for session: " + sessionId);
+            }
+            System.out.println("- Session moved to the next stage: WAITING_FOR_PLAYERS_TO_READY");
         }
     }
 
@@ -117,19 +131,22 @@ public class GameSession implements Serializable {
         }
         player.isReady = true;
         if (this.status == GameSessionStatus.WAITING_FOR_PLAYERS_TO_READY && allPlayersReady()) {
+            System.out.println("- All players are ready for session: " + sessionId);
             this.startGame();
         }
     }
 
     public void startGame() {
-        System.out.println("- Starting the game for session " + sessionId);
+        System.out.println("- Initiating game start for session: " + sessionId);
         // Start the game if all players are ready
         if (this.status != GameSessionStatus.WAITING_FOR_PLAYERS_TO_READY) {
-            System.out.println("- Session " + sessionId + " failed to start the game at status " + status);
+            System.out.println("- Invalid session status" + status);
+            System.out.println("- Failed to start the game for session: " + sessionId);
             return;
         }
         if (!allPlayersReady()) {
-            System.out.println("- Session " + sessionId + " failed to start the game at ready status since not all players are ready");
+            System.out.println("- Not all players are ready");
+            System.out.println("- Failed to start the game for session: " + sessionId);
             return;
         }
         // add players to the database
@@ -140,6 +157,7 @@ public class GameSession implements Serializable {
             return;
         }
         this.status = GameSessionStatus.GAME_STARTED;
+        System.out.println("- Move to the next stage: GAME_STARTED");
         // prepare a response message
         GameMessage response = this.initGameMessageToPlayers();
         response.setType(GameMessageType.GAME_START);
@@ -148,7 +166,7 @@ public class GameSession implements Serializable {
         try {
             messageSender.sendMessage(response);
             this.gameStartTime = System.currentTimeMillis();
-            System.out.println("- Successfully started the game for session " + sessionId);
+            System.out.println("- Broadcasted game start message to players for session: " + sessionId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -175,6 +193,12 @@ public class GameSession implements Serializable {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        if (player.isCorrect) {
+            System.out.println("- Player " + user.getUsername() + " submitted the correct answer: " + expression);
+        } else {
+            System.out.println("- Player " + user.getUsername() + " submitted an incorrect answer: " + expression);
         }
 
         Player winner = getWinner();
@@ -205,6 +229,7 @@ public class GameSession implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("- Winner is " + winner.user.getUsername() + " with expression " + winner.expression);
         // acknowledge all players the game has ended
         GameMessage response = this.initGameMessageToPlayers();
         response.setType(GameMessageType.GAME_END);
@@ -213,7 +238,7 @@ public class GameSession implements Serializable {
         response.setSolution(winner.expression);
         try {
             messageSender.sendMessage(response);
-            System.out.println("- Successfully ended the game for session " + sessionId);
+            System.out.println("- Broadcasted game end message to players for session: " + sessionId);
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -239,6 +264,7 @@ public class GameSession implements Serializable {
         message.setMessage("Update leaderboard");
         try {
             messageSender.sendMessage(message);
+            System.out.println("- Broadcasted update leaderboard message to all online players");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -265,6 +291,7 @@ public class GameSession implements Serializable {
     public void terminate() {
         try {
             this.status = GameSessionStatus.GAME_ENDED;
+            System.out.println("- Move to the next stage: GAME_ENDED");
             messageSender.close();
             this.messageSender = null;
             this.gameSessionManager.removeSession(this.sessionId);
