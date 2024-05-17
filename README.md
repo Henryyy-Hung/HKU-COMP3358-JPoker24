@@ -48,6 +48,11 @@ CREATE DATABASE GameDB;
 CREATE USER 'gameUser'@'localhost' IDENTIFIED BY 'gamePassword';
 GRANT ALL PRIVILEGES ON GameDB.* TO 'gameUser'@'localhost';
 FLUSH PRIVILEGES;
+```
+
+Switch to the Game Database.
+
+```sql
 USE GameDB;
 ```
 
@@ -91,14 +96,14 @@ Quit MySQL Console.
 
 ### 1.3 Set Up Glassfish 6.1.0 (JMS Service)
 
+- **Important**: Glassfish 6.1.0 is very different from Glassfish 5, since it migrate the `jms` package from `javax.jms` to `jakarta.jms`. Please **DO NOT** run this application under Glassfish 5.
+
 #### 1.3.1 Install Glassfish 6.1.0 on Linux Ubuntu
 
 - Follow the tutorial at [https://www.howtoforge.com/how-to-install-glassfish-on-ubuntu-22-04/](https://www.howtoforge.com/how-to-install-glassfish-on-ubuntu-22-04/) to download and set up glassfish 6.1.0.
 - Suppose you follow the guideline and download the `glassfish-6.1.0`.
 
 - Find the **`gf-client.jar`** at `.../glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar`, and remember the path to it as **`$gf_client_path`**.
-
-- **Note**: Glassfish 6.1.0 is very different from Glassfish 5, since it migrate the `jms` package from `javax.jms` to `jakarta.jms`. Please be very careful when dealing with the version of Glassfish.
 
 #### 1.3.2 Set Up Glassfish JMS Service
 
