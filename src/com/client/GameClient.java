@@ -39,6 +39,7 @@ public class GameClient {
         new Thread(() -> {
             try {
                 this.gameManager = new GameManager(this);
+                System.out.println("Game Manager is running...");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -46,6 +47,7 @@ public class GameClient {
         // login ui
         SwingUtilities.invokeLater(() -> {
             this.getLoginUI().setVisible(true);
+            System.out.println("Game UI is running...");
         });
         // shutdown hook
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -104,15 +106,15 @@ public class GameClient {
             System.out.println("User is null.");
             return;
         }
-
+        System.out.println("");
         System.out.println("> User Information:");
-        System.out.println("Username: " + this.user.getUsername());
-        System.out.println("Password: " + this.user.getPassword());
-        System.out.println("Is Online: " + this.user.isOnline());
-        System.out.println("Num of games won: " + this.user.getNumOfGamesWon());
-        System.out.println("Num of games played: " + this.user.getNumOfGamesPlayed());
-        System.out.println("Avg win time: " + this.user.getAvgWinningTime());
-        System.out.println("Rank: " + this.user.getRank());
+        System.out.println("- Username:            " + this.user.getUsername());
+        System.out.println("- Password:            " + this.user.getPassword());
+        System.out.println("- Is Online:           " + this.user.isOnline());
+        System.out.println("- Num of games won:    " + this.user.getNumOfGamesWon());
+        System.out.println("- Num of games played: " + this.user.getNumOfGamesPlayed());
+        System.out.println("- Avg win time:        " + this.user.getAvgWinningTime());
+        System.out.println("- Rank:                " + this.user.getRank());
     }
 
     public List<User> getTopUsers() {

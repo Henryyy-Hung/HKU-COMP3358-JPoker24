@@ -78,26 +78,26 @@ public class GameManager implements MessageProcessor {
             // cast the message to GameMessage
             GameMessage gameMessage = (GameMessage) message;
             // print the received message
-            System.out.println("> Received message: " + gameMessage.getMessage() + " from " + gameMessage.getSenderId());
+            System.out.println("\n> Message received from " + gameMessage.getSenderId());
             // handle different message types using switch case
             switch (gameMessage.getType()) {
                 case SESSION_READY: {
-                    System.out.println("- This is a SESSION_READY message");
+                    System.out.println("- The " + gameMessage.getSenderId() + " accepted the game join request");
                     this.handleSessionReady(gameMessage);
                     break;
                 }
                 case GAME_START: {
-                    System.out.println("- This is a GAME_START message");
+                    System.out.println("- The " + gameMessage.getSenderId() + " started the game");
                     this.handleGameStart(gameMessage);
                     break;
                 }
                 case GAME_END: {
-                    System.out.println("- This is a GAME_END message");
+                    System.out.println("- The " + gameMessage.getSenderId() + " ended the game");
                     this.handleGameEnd(gameMessage);
                     break;
                 }
                 case UPDATE_LEADERBOARD: {
-                    System.out.println("- This is a UPDATE_LEADERBOARD message");
+                    System.out.println("- The " + gameMessage.getSenderId() + " updated the leaderboard");
                     this.handleUpdateLeaderboard(gameMessage);
                     break;
                 }
@@ -110,10 +110,12 @@ public class GameManager implements MessageProcessor {
     private void handleSessionReady(GameMessage gameMessage) {
         // obtain the session id
         String sessionId = gameMessage.getSessionId();
+        System.out.println("- Game session id obtained: " + sessionId);
         this.sessionId = sessionId;
         // initialize the topic message receiver for the session
         try {
             this.initTopicMessageReceiver(sessionId);
+            System.out.println("- Topic message receiver initialized for session: " + sessionId);
         }
         catch (Exception e) {
             e.printStackTrace();

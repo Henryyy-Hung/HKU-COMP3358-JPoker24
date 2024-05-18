@@ -8,7 +8,7 @@ import com.common.ProfileManager;
 
 public class ClientMain {
     public static void main(String[] args) {
-        
+
         System.out.println("");
 
 	    if (args.length < 1) {
@@ -18,8 +18,11 @@ public class ClientMain {
 	    String host = (args.length < 1) ? "localhost" : args[0];
         try {
             Registry registry = LocateRegistry.getRegistry(host, 1099);
+            System.out.println("RMI registry on " + host + " found.");
             Authenticator auth = (Authenticator) registry.lookup("AuthService");
+            System.out.println("Authentication Service found.");
             ProfileManager profile = (ProfileManager) registry.lookup("ProfileService");
+            System.out.println("Profile Service found.");
             new GameClient(auth, profile);
         } catch (Exception e) {
             System.err.println("Client exception: " + e.toString());
