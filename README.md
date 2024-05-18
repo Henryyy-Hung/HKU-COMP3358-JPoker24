@@ -1,4 +1,4 @@
-# HKU-COMP3358-JPoker24
+# HKU-COMP3358-JPoker24 Report
 
 **Document Directory**
 |Section|Title|Link|
@@ -116,6 +116,7 @@ Quit MySQL Console.
 
 - Enter you glassfish admin console at [http://localhost:4848](http://localhost:4848), and login to it.
 - Under side bar, navigate to `Resources -> JMS Resources -> Connection Factories`.
+
   ![Glassfish Connection Factory](./readme_assets/images/glassfish_1.png)
 
 - Click `New` Button on the right Panel to create a `JPoker24GameConnectionFactory`, the field `JNDI Name` is `jms/JPoker24GameConnectionFactory` and the `Resource Type` is `jakarta.jms.ConnectionFactory`.
@@ -138,24 +139,27 @@ Quit MySQL Console.
 
 #### 2.1 Run Server & Client
 
-1. Open the terminal under `JPoker24Game` directory.
+1. Open the terminal under `JPoker24Game` directory. Copy `glassfish-6.1.0` and `mysql-connector-j_8.4.0-1ubuntu22.04_all`, which you download in **section 1.2.3** and **1.3.1** respectively, under `lib` if you want to directly copy and paste the command to run `.jar` file.
+
+   **File Structure of Submitted File**
 
    ```
-   JPoker24Game                (You are Here)
-   ├── Report.pdf
+   JPoker24Game                (Open Linux Terminal Here)
    ├── lib
+   │   ├── glassfish-6.1.0
+   │   └── mysql-connector-j_8.4.0-1ubuntu22.04_all
    ├── JPoker24Game.jar
    ├── JPoker24GameServer.jar
    └── security.policy
    ```
 
-2. Enter command below to check the availability of port 1099.
+2. Enter command below to check the **availability of port 1099**.
 
    ```bash
    sudo netstat -tulpn | grep 1099
    ```
 
-3. If Occupied, enter command below to kill the thread. Replace **$PID** with the PID shown output of the command above.
+3. If Occupied, enter command below to kill the thread. Replace **$PID** with the PID shown output of the command above. You must ensure port 1099 is available.
 
    ```bash
    sudo kill -9 $PID
@@ -209,10 +213,18 @@ Quit MySQL Console.
 
    ```bash
    java -cp "JPoker24Game.jar\
-   :lib/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar"\
+   :lib/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar" \
    -Djava.security.manager \
    -Djava.security.policy=security.policy \
-   com.server.ClientMain localhost
+   com.client.ClientMain localhost
+   ```
+
+6. Ensure you provide sufficient permission in security policy. Below are a safe option.
+
+   ```policy
+   grant {
+       permission java.security.AllPermission;
+   };
    ```
 
 ### 2.2 Inspect the MySQL Database
@@ -234,24 +246,30 @@ Quit MySQL Console.
    SELECT * FROM Participations;
    ```
 
+### 2.3 View Source Code
+
+Following the instruction, the source code has been packed within the `.jar` file. To view the source code, please decompress the `.jar` file, and browse the package under `com` directory.
+
+Please be noted that, there are some common packages shared between `JPoker24Game.jar` and `JPoker24GameServer.jar`, thus, just read once the packages with the same package name.
+
 ## 3. Game Demo
 
 ### 2.1 Login & Sign Up
 
-### 2.2 Game Play
+### 2.2 Game PlayChapter 1 Background
 
-#### 2.2.1 Basic Game Stages
+### 2.2 Basic Game Stages
 
-#### 2.2.2 Game Start with 2-4 Players
+### 2.2 Game Start with 2-4 Players
 
-#### 2.2.3 Game with Multi-Session
+### 2.3 Game with Multi-Session
 
-#### 2.2.4 Evaluation & Verification of Expression
+### 2.4 Evaluation & Verification of Expression
 
-#### 2.2.5 Game End
+### 2.5 Game End
 
-#### 2.2.6 Broadcast of Leaderboard Update
+### 2.6 Broadcast of Leaderboard Update
 
-#### 2.2.7 Related Database Update
+### 2.7 Related Database Update
 
-### 2.3 Architecture of Game
+### 2.8 Architecture of Game

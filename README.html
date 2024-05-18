@@ -25,9 +25,36 @@
       <div class="crossnote markdown-preview  ">
       
 <h1 id="hku-comp3358-jpoker24">HKU-COMP3358-JPoker24 </h1>
-<h2 id="1-quick-start">1. Quick Start </h2>
-<p>This section provides a guidence on how to set up the environment and run the code.</p>
-<h3 id="11-running-environment">1.1 Running Environment </h3>
+<p><strong>Document Directory</strong></p>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Title</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Environment Set Up</td>
+<td><a href="#1-environment-set-up">Link</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>How to Run</td>
+<td><a href="#2-how-to-run-the-program">Link</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Game Demo</td>
+<td><a href="#3-game-demo">Link</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="1-environment-set-up">1. Environment Set Up </h2>
+<p>This section provides a guidence on how to set up the environment to run the jar.</p>
+<h3 id="11-overview">1.1 Overview </h3>
 <p><strong>System</strong></p>
 <ul>
 <li>Linux Ubuntu 22.04</li>
@@ -35,9 +62,9 @@
 <p><strong>Dependencies</strong></p>
 <ul>
 <li>openjdk version "11.0.22" 2024-01-16</li>
-<li>glassfish-6.1.0</li>
 <li>mysql Ver 8.0.36-0ubuntu0.22.04.1 for Linux on x86_64 ((Ubuntu))</li>
 <li>mysql-connector-j_8.4.0-1ubuntu22.04_all</li>
+<li>glassfish-6.1.0</li>
 </ul>
 <p><strong>Assumption</strong></p>
 <ul>
@@ -110,38 +137,126 @@ FLUSH <span class="token keyword keyword-PRIVILEGES">PRIVILEGES</span><span clas
 </ul>
 <h4 id="132-set-up-glassfish-jms-service">1.3.2 Set Up Glassfish JMS Service </h4>
 <ul>
-<li>Enter you glassfish admin console at <a href="http://localhost:4848">http://localhost:4848</a>, and login to it.</li>
-<li>Under side bar, navigate to <code>Resources -&gt; JMS Resources -&gt; Connection Factories</code>.</li>
-</ul>
-<p><img src="./readme_assets/images/glassfish_1.png" alt="Glassfish Connection Factory"></p>
-<ul>
-<li>Click <code>New</code> Button on the right Panel to create a <code>JPoker24GameConnectionFactory</code>, the field <code>JNDI Name</code> is <code>jms/JPoker24GameConnectionFactory</code> and the <code>Resource Type</code> is <code>jakarta.jms.ConnectionFactory</code>.</li>
-</ul>
+<li>
+<p>Enter you glassfish admin console at <a href="http://localhost:4848">http://localhost:4848</a>, and login to it.</p>
+</li>
+<li>
+<p>Under side bar, navigate to <code>Resources -&gt; JMS Resources -&gt; Connection Factories</code>.<br>
+<img src="./readme_assets/images/glassfish_1.png" alt="Glassfish Connection Factory"></p>
+</li>
+<li>
+<p>Click <code>New</code> Button on the right Panel to create a <code>JPoker24GameConnectionFactory</code>, the field <code>JNDI Name</code> is <code>jms/JPoker24GameConnectionFactory</code> and the <code>Resource Type</code> is <code>jakarta.jms.ConnectionFactory</code>.</p>
 <p><img src="./readme_assets/images/glassfish_2.png" alt="Glassfish Connection Factory Set Up"></p>
-<ul>
-<li>Under side bar, navigate to <code>Resources -&gt; JMS Resources -&gt; Destination Resources</code>.</li>
-</ul>
+</li>
+<li>
+<p>Under side bar, navigate to <code>Resources -&gt; JMS Resources -&gt; Destination Resources</code>.</p>
 <p><img src="./readme_assets/images/glassfish_3.png" alt="Glassfish Destination Resources"></p>
-<ul>
-<li>Click <code>New</code> Button on the right Panel to create a <code>JPoker24GameQueue</code>, the field <code>JNDI Name</code> is <code>jms/JPoker24GameQueue</code>, the <code>Physical Destination Name</code> is <code>JPoker24GameQueue</code>, and the <code>Resource Type</code> is <code>jakarta.jms.Queue</code>.</li>
-</ul>
+</li>
+<li>
+<p>Click <code>New</code> Button on the right Panel to create a <code>JPoker24GameQueue</code>, the field <code>JNDI Name</code> is <code>jms/JPoker24GameQueue</code>, the <code>Physical Destination Name</code> is <code>JPoker24GameQueue</code>, and the <code>Resource Type</code> is <code>jakarta.jms.Queue</code>.</p>
 <p><img src="./readme_assets/images/glassfish_4.png" alt="Glassfish Destination Resources"></p>
-<ul>
-<li>Click <code>New</code> Button on the right Panel to create a <code>JPoker24GameTopic</code>, the field <code>JNDI Name</code> is <code>jms/JPoker24GameTopic</code>, the <code>Physical Destination Name</code> is <code>JPoker24GameTopic</code>, and the <code>Resource Type</code> is <code>jakarta.jms.Topic</code>.</li>
-</ul>
+</li>
+<li>
+<p>Click <code>New</code> Button on the right Panel to create a <code>JPoker24GameTopic</code>, the field <code>JNDI Name</code> is <code>jms/JPoker24GameTopic</code>, the <code>Physical Destination Name</code> is <code>JPoker24GameTopic</code>, and the <code>Resource Type</code> is <code>jakarta.jms.Topic</code>.</p>
 <p><img src="./readme_assets/images/glassfish_5.png" alt="Glassfish Destination Resources"></p>
-<h3 id="14-run-the-server-client--database">1.4 Run the Server, Client &amp; Database </h3>
-<h2 id="2-demo">2. Demo </h2>
+</li>
+</ul>
+<h2 id="2-how-to-run-the-program">2 How to Run the Program </h2>
+<h4 id="21-run-server--client">2.1 Run Server &amp; Client </h4>
+<ol>
+<li>
+<p>Open the terminal under <code>JPoker24Game</code> directory.</p>
+<p><strong>File Structure of Submitted File</strong></p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>JPoker24Game                (Open Linux Terminal Here)
+├── lib
+│&nbsp;&nbsp; ├── glassfish-6.1.0
+│&nbsp;&nbsp; └── mysql-connector-j_8.4.0-1ubuntu22.04_all
+├── JPoker24Game.jar
+├── JPoker24GameServer.jar
+└── security.policy
+</code></pre></li>
+<li>
+<p>Enter command below to check the <strong>availability of port 1099</strong>.</p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">sudo</span> <span class="token function">netstat</span> <span class="token parameter variable">-tulpn</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token number">1099</span>
+</code></pre></li>
+<li>
+<p>If Occupied, enter command below to kill the thread. Replace <strong>$PID</strong> with the PID shown output of the command above. You must ensure port 1099 is available.</p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">sudo</span> <span class="token function">kill</span> <span class="token parameter variable">-9</span> <span class="token variable">$PID</span>
+</code></pre></li>
+<li>
+<p>To start the server, use the command template below:</p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">java</span> <span class="token parameter variable">-cp</span> <span class="token string">"<span class="token variable">$server_jar_path</span>\
+:<span class="token variable">$mysql_connector_path</span>\
+:<span class="token variable">$gf_client_path</span>"</span> <span class="token punctuation">\</span>
+<span class="token parameter variable">-Djava.security.manager</span> <span class="token parameter variable">-Djava.security.policy</span><span class="token operator">=</span><span class="token variable">$security_policy_path</span> <span class="token punctuation">\</span>
+com.server.ServerMain
+</code></pre><p>4.1 Replace <strong>$server_jar_path</strong> with path to <strong>JPoker24GameServer.jar</strong>.</p>
+<p>4.2 Replace <strong>$mysql_connector_path</strong> with the path to <strong>mysql-connector-j-8.4.0.jar</strong>.</p>
+<p>4.3 Replace <strong>$gf_client_path</strong> with path to <strong>gf-client.jar</strong> of glassfish 6.1.0.</p>
+<p>4.4 Replace <strong>$security_policy_path</strong> with path to <strong>security.policy</strong>.</p>
+<p>4.5 Below are the command if you run in the <code>/JPoker24Game</code> directory and using <code>lib</code> provided:</p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">java</span> <span class="token parameter variable">-cp</span> <span class="token string">"JPoker24GameServer.jar\
+:lib/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar\
+:lib/mysql-connector-j_8.4.0-1ubuntu22.04_all/usr/share/java/mysql-connector-j-8.4.0.jar"</span><span class="token punctuation">\</span>
+<span class="token parameter variable">-Djava.security.manager</span> <span class="token punctuation">\</span>
+<span class="token parameter variable">-Djava.security.policy</span><span class="token operator">=</span>security.policy <span class="token punctuation">\</span>
+com.server.ServerMain
+</code></pre></li>
+<li>
+<p>To start the client, use the command template below:</p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">java</span> <span class="token parameter variable">-cp</span> <span class="token string">"<span class="token variable">$client_jar_path</span>\
+:<span class="token variable">$gf_client_path</span>"</span> <span class="token punctuation">\</span>
+<span class="token parameter variable">-Djava.security.manager</span> <span class="token punctuation">\</span>
+<span class="token parameter variable">-Djava.security.policy</span><span class="token operator">=</span><span class="token variable">$security_policy_path</span> <span class="token punctuation">\</span>
+com.client.ClientMain localhost
+</code></pre><p>5.1 Replace <strong>$client_jar_path</strong> with path to <strong>JPoker24Game.jar</strong>.</p>
+<p>5.2 Replace <strong>$gf_client_path</strong> with path to <strong>gf-client.jar</strong> of glassfish 6.1.0.</p>
+<p>5.3 Replace <strong>$security_policy_path</strong> with path to <strong>security.policy</strong>.<br>
+5.4 Below are the command if you run in the <code>/JPoker24Game</code> directory and using <code>lib</code> provided::</p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">java</span> <span class="token parameter variable">-cp</span> <span class="token string">"JPoker24Game.jar\
+:lib/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar"</span> <span class="token punctuation">\</span>
+<span class="token parameter variable">-Djava.security.manager</span> <span class="token punctuation">\</span>
+<span class="token parameter variable">-Djava.security.policy</span><span class="token operator">=</span>security.policy <span class="token punctuation">\</span>
+com.client.ClientMain localhost
+</code></pre></li>
+<li>
+<p>Ensure you provide sufficient permission in security policy. Below are a safe option.</p>
+<pre data-role="codeBlock" data-info="policy" class="language-policy policy"><code>grant {
+    permission java.security.AllPermission;
+};
+</code></pre></li>
+</ol>
+<h3 id="22-inspect-the-mysql-database">2.2 Inspect the MySQL Database </h3>
+<ol>
+<li>
+<p>Open MySQL console in linux terminal.</p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">sudo</span> mysql <span class="token parameter variable">-u</span> root <span class="token parameter variable">-p</span>
+</code></pre></li>
+<li>
+<p>Switch to the database we use.</p>
+<pre data-role="codeBlock" data-info="sql" class="language-sql sql"><code><span class="token keyword keyword-USE">USE</span> GameDB<span class="token punctuation">;</span>
+</code></pre></li>
+<li>
+<p>Repeatly enter commands below to inspect the three tables we created.</p>
+<pre data-role="codeBlock" data-info="sql" class="language-sql sql"><code><span class="token keyword keyword-SELECT">SELECT</span> <span class="token operator">*</span> <span class="token keyword keyword-FROM">FROM</span> Users<span class="token punctuation">;</span>
+<span class="token keyword keyword-SELECT">SELECT</span> <span class="token operator">*</span> <span class="token keyword keyword-FROM">FROM</span> Games<span class="token punctuation">;</span>
+<span class="token keyword keyword-SELECT">SELECT</span> <span class="token operator">*</span> <span class="token keyword keyword-FROM">FROM</span> Participations<span class="token punctuation">;</span>
+</code></pre></li>
+</ol>
+<h3 id="23-view-source-code">2.3 View Source Code </h3>
+<p>Following the instruction, the source code has been packed within the <code>.jar</code> file. To view the source code, please decompress the <code>.jar</code> file, and browse the package under <code>com</code> directory.</p>
+<p>Please be noted that, there are some common packages shared between <code>JPoker24Game.jar</code> and <code>JPoker24GameServer.jar</code>, thus, just read once the packages with the same package name.</p>
+<h2 id="3-game-demo">3. Game Demo </h2>
 <h3 id="21-login--sign-up">2.1 Login &amp; Sign Up </h3>
 <h3 id="22-game-play">2.2 Game Play </h3>
-<h4 id="221-game-start-with-4-players">2.2.1 Game Start with 4 Players </h4>
-<h4 id="222-game-start-with-2-3-players">2.2.2 Game Start with 2-3 Players </h4>
-<h4 id="223-game-with-multi-session">2.2.3 Game with Multi-Session </h4>
-<h4 id="224-evaluation--verification-of-expression">2.2.4 Evaluation &amp; Verification of Expression </h4>
-<h4 id="225-game-end">2.2.5 Game End </h4>
-<h4 id="226-broadcast-of-leaderboard-update">2.2.6 Broadcast of Leaderboard Update </h4>
-<h4 id="227-related-database-update">2.2.7 Related Database Update </h4>
-<h3 id="23-architecture-of-game">2.3 Architecture of Game </h3>
+<h3 id="22-basic-game-stages">2.2 Basic Game Stages </h3>
+<h3 id="22-game-start-with-2-4-players">2.2 Game Start with 2-4 Players </h3>
+<h3 id="23-game-with-multi-session">2.3 Game with Multi-Session </h3>
+<h3 id="24-evaluation--verification-of-expression">2.4 Evaluation &amp; Verification of Expression </h3>
+<h3 id="25-game-end">2.5 Game End </h3>
+<h3 id="26-broadcast-of-leaderboard-update">2.6 Broadcast of Leaderboard Update </h3>
+<h3 id="27-related-database-update">2.7 Related Database Update </h3>
+<h3 id="28-architecture-of-game">2.8 Architecture of Game </h3>
 
       </div>
       
