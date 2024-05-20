@@ -158,11 +158,20 @@ case "$command" in
     "compile")
         compile
         ;;
+    "build")
+        build
+        ;;
     "java server")
         start_server
         ;;
     "java client")
         start_client
+        ;;
+    "jar server")
+        start_server_jar
+        ;;
+    "jar client")
+        start_client_jar
         ;;
     "compile server")
         compile
@@ -171,15 +180,6 @@ case "$command" in
     "compile client")
         compile
         start_client
-        ;;
-    "build")
-        build
-        ;;
-    "jar server")
-        start_server_jar
-        ;;
-    "jar client")
-        start_client_jar
         ;;
     "build server")
         build

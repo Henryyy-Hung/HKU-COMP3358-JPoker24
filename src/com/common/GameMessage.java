@@ -29,6 +29,9 @@ public class GameMessage implements Serializable {
     private User winner;            // the winner of the game
     private String solution;        // the solution of the winner
 
+    // Broadcast informations
+    private List<User> topUsers;    // the top users in the game
+
     public GameMessage() {
         this.creationTime = System.currentTimeMillis();
     }
@@ -119,5 +122,13 @@ public class GameMessage implements Serializable {
 
     public String getSolution() {
         return solution;
+    }
+
+    public void setTopUsers(List<User> topUsers) {
+        this.topUsers = topUsers;
+    }
+
+    public List<User> getTopUsers() {
+        return topUsers;
     }
 }

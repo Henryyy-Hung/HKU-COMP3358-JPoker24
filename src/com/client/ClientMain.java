@@ -12,7 +12,7 @@ public class ClientMain {
         System.out.println("");
 
 	    if (args.length < 1) {
-	        System.out.println("Usage: java MessageBox <RMI registry host>");
+	        System.out.println("Usage: <RMI registry host>");
             System.out.println("Using default host: localhost");
 	    }
 	    String host = (args.length < 1) ? "localhost" : args[0];

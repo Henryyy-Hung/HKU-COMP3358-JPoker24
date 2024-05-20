@@ -9,10 +9,12 @@ import com.common.User;
 import com.jms.GameMessageSender;
 import com.enums.GameSessionStatus;
 import com.handler.GameDatabaseHandler;
+import com.handler.UserDatabaseHandler;
 
 public class GameSessionManager {
 
     GameDatabaseHandler gameDatabaseHandler;
+    UserDatabaseHandler userDatabaseHandler;
     private Map<String, GameSession> sessions = new HashMap<>();
     private ConnectionFactory connectionFactory;
     private Topic gameTopic;
@@ -22,6 +24,11 @@ public class GameSessionManager {
         this.gameTopic = gameTopic;
         try {
             this.gameDatabaseHandler = new GameDatabaseHandler();
+        } catch (SQLException e) {
+            System.err.println("Database connection failed: " + e.getMessage());
+        }
+        try {
+            this.userDatabaseHandler = new UserDatabaseHandler();
         } catch (SQLException e) {
             System.err.println("Database connection failed: " + e.getMessage());
         }
@@ -70,6 +77,10 @@ public class GameSessionManager {
 
     public GameDatabaseHandler getGameDatabaseHandler() {
         return gameDatabaseHandler;
+    }
+
+    public UserDatabaseHandler getUserDatabaseHandler() {
+        return userDatabaseHandler;
     }
 
     public String addUserToAvailableSession(User user) {
