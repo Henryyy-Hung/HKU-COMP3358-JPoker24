@@ -19,11 +19,13 @@ public class GameServer implements MessageProcessor {
     private GameMessageReceiver queueMessageReceiver;
 
     public GameServer() throws Exception {
+        System.out.println("Initializing JMS Services...");
         // Setup JNDI and get connection factory, queue, and topic
         JMSUtility.setupJNDI();
         this.connectionFactory = JMSUtility.getConnectionFactory("jms/JPoker24GameConnectionFactory");
         this.gameQueue = JMSUtility.getQueue("jms/JPoker24GameQueue");
         this.gameTopic = JMSUtility.getTopic("jms/JPoker24GameTopic");
+        System.out.println("JMS Services initialized.");
         // Create a session manager
         this.sessionManager = new GameSessionManager(this.connectionFactory, this.gameTopic);
         // Create Broadcast and Queue senders

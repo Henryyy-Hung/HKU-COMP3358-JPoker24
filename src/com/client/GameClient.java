@@ -71,6 +71,7 @@ public class GameClient {
         return gameManager;
     }
 
+    // initialize user with username and password
     public void initUser(String username, String password) {
         try {
             this.user = this.getProfileManager().getUser(username, password);
@@ -79,10 +80,12 @@ public class GameClient {
         }
     }
 
+    // get user
     public User getUser() {
         return user;
     }
 
+    // update user base on the user's username and password stored in the user object
     public void updateUser() {
         // only update user if user is not null (i.e. user has logged in)
         String username = this.user.getUsername();
@@ -117,10 +120,17 @@ public class GameClient {
         System.out.println("- Rank:                " + this.user.getRank());
     }
 
+    // set top users
+    public void setTopUsers(List<User> topUsers) {
+        this.topUsers = topUsers;
+    }
+
+    // get top users
     public List<User> getTopUsers() {
         return topUsers;
     }
 
+    // update top users from the profile manager (server side)
     public void updateTopUsers() {
         try {
             List<User> topUsers = this.profile.getTopUsers();

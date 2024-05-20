@@ -48,6 +48,9 @@ public class RegisterUI extends JFrame {
             if (username.length() == 0) {
                 JOptionPane.showMessageDialog(this, "Invalid User Name!");
                 return;
+            } else if (username.equals("all") || username.equals("server")) {
+                JOptionPane.showMessageDialog(this, "User Name is reserved!");
+                return;
             } else if (password.length() < 4 || password.length() > 16) {
                 JOptionPane.showMessageDialog(this, "Length of password should between 4 and 16!");
                 return;

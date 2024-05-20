@@ -257,11 +257,22 @@ public class GameSession implements Serializable {
     }
 
     private void broadcastUpdateLeaderboard() {
+
+        List<User> topUsers = new ArrayList<>();
+        try {
+            // get top 10 users
+            topUsers = this.gameSessionManager.getUserDatabaseHandler().getTopNUsersWithGameInfo(10);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("- Failed to broadcast update leaderboard message since failed to get top users");
+            return;
+        }
         GameMessage message = new GameMessage();
         message.setType(GameMessageType.UPDATE_LEADERBOARD);
         message.setSenderId("server");
         message.setReceiverId("all");
         message.setMessage("Update leaderboard");
+        message.setTopUsers(topUsers);
         try {
             messageSender.sendMessage(message);
             System.out.println("- Broadcasted update leaderboard message to all online players");

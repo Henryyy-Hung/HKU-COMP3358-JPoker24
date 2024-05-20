@@ -87,17 +87,17 @@ public class GameManager implements MessageProcessor {
                     break;
                 }
                 case GAME_START: {
-                    System.out.println("- The " + gameMessage.getSenderId() + " started the game");
+                    System.out.println("- The " + gameMessage.getSenderId() + " started the game since all players ready");
                     this.handleGameStart(gameMessage);
                     break;
                 }
                 case GAME_END: {
-                    System.out.println("- The " + gameMessage.getSenderId() + " ended the game");
+                    System.out.println("- The " + gameMessage.getSenderId() + " ended the game since a player won");
                     this.handleGameEnd(gameMessage);
                     break;
                 }
                 case UPDATE_LEADERBOARD: {
-                    System.out.println("- The " + gameMessage.getSenderId() + " updated the leaderboard");
+                    System.out.println("- The " + gameMessage.getSenderId() + " sent the latest leaderboard");
                     this.handleUpdateLeaderboard(gameMessage);
                     break;
                 }
@@ -127,6 +127,7 @@ public class GameManager implements MessageProcessor {
     private void handleGameStart(GameMessage gameMessage) {
         SwingUtilities.invokeLater(() -> {
             this.gameClient.getGameUI().proceedGamePanel_gamePlaying(gameMessage.getPlayers(), gameMessage.getCards());
+            System.out.println("- Game UI updated");
         });
     }
 
@@ -134,15 +135,18 @@ public class GameManager implements MessageProcessor {
         // update ui
         SwingUtilities.invokeLater(() -> {
             this.gameClient.getGameUI().proceedGamePanel_gameOver(gameMessage.getWinner().getUsername(), gameMessage.getSolution());
+            System.out.println("- Game UI updated");
         });
         // update information
         this.gameClient.updateUser();
         SwingUtilities.invokeLater(() -> {
             this.gameClient.getGameUI().updateUserProfilePanel();
+            System.out.println("- User profile updated");
         });
         // Drop the topic message receiver for the terminated game session
         try {
             this.dropTopicMessageReceiver();
+            System.out.println("- Topic message receiver dropped for session: " + this.sessionId);
         }
         catch (JMSException e) {
             e.printStackTrace();
@@ -151,9 +155,15 @@ public class GameManager implements MessageProcessor {
     }
 
     private void handleUpdateLeaderboard(GameMessage gameMessage) {
-        this.gameClient.updateTopUsers();
+        List<User> topUsers = gameMessage.getTopUsers();
+        if (topUsers == null) {
+            System.out.println("- Failed to update the leaderboard due to missing top users");
+            return;
+        }
+        this.gameClient.setTopUsers(topUsers);
         SwingUtilities.invokeLater(() -> {
             this.gameClient.getGameUI().updateUserLeaderBoardPanel();
+            System.out.println("- Leaderboard updated");
         });
     }
 
@@ -171,6 +181,8 @@ public class GameManager implements MessageProcessor {
         request.setMessage("Requesting game session");
         try {
             queueMessageSender.sendMessage(request);
+            System.out.println("\n> Message sent to server");
+            System.out.println("- Requesting game session");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -183,6 +195,8 @@ public class GameManager implements MessageProcessor {
         request.setMessage("Ready for game");
         try {
             queueMessageSender.sendMessage(request);
+            System.out.println("\n> Message sent to server");
+            System.out.println("- Ready for game");
         } catch (JMSException e) {
             e.printStackTrace();
         }
@@ -196,6 +210,8 @@ public class GameManager implements MessageProcessor {
         request.setExpression(answer);
         try {
             queueMessageSender.sendMessage(request);
+            System.out.println("\n> Message sent to server");
+            System.out.println("- Submitting answer: " + answer);
         } catch (Exception e) {
             e.printStackTrace();
         }
