@@ -159,31 +159,15 @@ Quit MySQL Console.
    sudo netstat -tulpn | grep 1099
    ```
 
-3. If Occupied, enter command below to kill the thread. Replace **$PID** with the PID shown output of the command above. You must ensure port 1099 is available.
+3. If Occupied, enter command below to kill the thread. Replace **$PID** with the PID shown output of the command above. You must ensure port 1099 is available. A demo can found in image.
 
    ```bash
    sudo kill -9 $PID
    ```
 
-4. To start the server, use the command template below:
+   ![alt text](/readme_assets/images/release_port.png)
 
-   ```bash
-   java -cp "$server_jar_path\
-   :$mysql_connector_path\
-   :$gf_client_path" \
-   -Djava.security.manager -Djava.security.policy=$security_policy_path \
-   com.server.ServerMain
-   ```
-
-   4.1 Replace **$server_jar_path** with path to **JPoker24GameServer.jar**.
-
-   4.2 Replace **$mysql_connector_path** with the path to **mysql-connector-j-8.4.0.jar**.
-
-   4.3 Replace **$gf_client_path** with path to **gf-client.jar** of glassfish 6.1.0.
-
-   4.4 Replace **$security_policy_path** with path to **security.policy**.
-
-   4.5 Below are the command if you run in the `/JPoker24Game` directory and using `lib` provided:
+4. To start the server, use command below if you follow the directory structure in 1.
 
    ```bash
    java -cp "JPoker24GameServer.jar\
@@ -194,28 +178,51 @@ Quit MySQL Console.
    com.server.ServerMain
    ```
 
-5. To start the client, use the command template below:
+   ![alt text](/readme_assets/images/run_server_jar.png)
+
+   If you are run at other place, or did not proper configure the `lib` directory, please use the command template below to execute the jar file.
+
+   - Replace **$server_jar_path** with path to **JPoker24GameServer.jar**.
+
+   - Replace **$mysql_connector_path** with the path to **mysql-connector-j-8.4.0.jar**.
+
+   - Replace **$gf_client_path** with path to **gf-client.jar** of glassfish 6.1.0.
+
+   - Replace **$security_policy_path** with path to **security.policy**.
 
    ```bash
-   java -cp "$client_jar_path\
+   java -cp "$server_jar_path\
+   :$mysql_connector_path\
    :$gf_client_path" \
-   -Djava.security.manager \
-   -Djava.security.policy=$security_policy_path \
-   com.client.ClientMain localhost
+   -Djava.security.manager -Djava.security.policy=$security_policy_path \
+   com.server.ServerMain
    ```
 
-   5.1 Replace **$client_jar_path** with path to **JPoker24Game.jar**.
-
-   5.2 Replace **$gf_client_path** with path to **gf-client.jar** of glassfish 6.1.0.
-
-   5.3 Replace **$security_policy_path** with path to **security.policy**.
-   5.4 Below are the command if you run in the `/JPoker24Game` directory and using `lib` provided::
+5. To start the server, use command below if you follow the directory structure in 1.
 
    ```bash
    java -cp "JPoker24Game.jar\
    :lib/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar" \
    -Djava.security.manager \
    -Djava.security.policy=security.policy \
+   com.client.ClientMain localhost
+   ```
+
+   ![alt text](/readme_assets/images/run_client_jar.png)
+
+   If you are run at other place, or did not proper configure the `lib` directory, please use the command template below to execute the jar file.
+
+   - Replace **$client_jar_path** with path to **JPoker24Game.jar**.
+
+   - Replace **$gf_client_path** with path to **gf-client.jar** of glassfish 6.1.0.
+
+   - Replace **$security_policy_path** with path to **security.policy**.
+
+   ```bash
+   java -cp "$client_jar_path\
+   :$gf_client_path" \
+   -Djava.security.manager \
+   -Djava.security.policy=$security_policy_path \
    com.client.ClientMain localhost
    ```
 
@@ -248,9 +255,28 @@ Quit MySQL Console.
 
 ### 2.3 View Source Code
 
-Following the instruction, the source code has been packed within the `.jar` file. To view the source code, please decompress the `.jar` file, and browse the package under `com` directory.
+Following the assignment instruction, the source code has been packed within the `.jar` file. To view the source code, please decompress the `.jar` file by command below.
 
-Please be noted that, there are some common packages shared between `JPoker24Game.jar` and `JPoker24GameServer.jar`, thus, just read once the packages with the same package name.
+```bash
+jar xf filename.jar
+```
+
+Regarding the strucuture of `.jar` file, all the source code are under `com` directory. The `jms`, `common`, `enum`, `utils` package are shared by both server and client, so view them once is enough.
+
+```bash
+JPoker24Game.jar              JPoker24GameServer.jar
+├── assets                    ├── com
+│   └── images                │   ├── server
+├── com                       │   ├── handler
+│   ├── client                │   ├── jms
+│   ├── ui                    │   ├── common
+│   ├── jms                   │   ├── enums
+│   ├── common                │   └── utils
+│   ├── enums                 └── META-INF
+│   └── utils                     └── MANIFEST.MF
+└── META-INF
+    └── MANIFEST.MF
+```
 
 ## 3. Game Demo
 
