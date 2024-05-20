@@ -300,7 +300,6 @@ public class GameUI extends JFrame {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
 
         gbc.gridx = 0;
@@ -415,7 +414,6 @@ public class GameUI extends JFrame {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.ipady = 10;
