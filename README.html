@@ -337,7 +337,7 @@ com.client.ClientMain localhost
 <p><strong>Client Winner Display</strong>: The client receives and displays the winner's details and their successful expression on the GUI, offering congratulations. Also, this triggers players of the session to update their personal profile and corresponding panel, as it changes.</p>
 </li>
 <li>
-<p><strong>Client Leaderboard Update</strong>: The client receives updated leaderboard information and refreshes the GUI, base on the information extracted from the message, to reflect the new standings.</p>
+<p><strong>Client Leaderboard Update</strong>: The client receives updated leaderboard information and refreshes the GUI, to reflect the new standings.</p>
 </li>
 </ol>
 <img src="readme_assets\images\client_log_5.png">
@@ -354,8 +354,8 @@ com.client.ClientMain localhost
 <p>The game room requires a minimum of 2 players and can accommodate a maximum of 4 players.</p>
 <p>Players have a 10-second window to join the game room, provided the maximum capacity has not been reached. If the maximum capacity is reached within this time, the game room status changes to <code>WAITING_FOR_PLAYERS_TO_READY</code>.</p>
 <p>If the minimum capacity is met 10 seconds after the game room creation, or upon subsequent player joins, the status also transitions to <code>WAITING_FOR_PLAYERS_TO_READY</code>.</p>
-<p>Upon the current status is <code>WAITING_FOR_PLAYERS_TO_READY</code> and receiving a readiness confirmation from each player, the game checks if all players are ready. If so, the game immediately proceeds to prepare the necessary game materials and broadcasts them to the players in the session.</p>
-<p>These settings ensure that the game session can fill up quickly if all players join within the initial 10-second window, and can start promptly after this window if the minimum player requirement is met.</p>
+<p>Upon the current status is <code>WAITING_FOR_PLAYERS_TO_READY</code> and receiving a readiness confirmation from each player, the game checks if all players are ready (Note: At t=10s, a check will also be triggered if minimum requirement is reached). If so, the game immediately proceeds to prepare the necessary game materials and broadcasts them to the players in the session.</p>
+<p>These settings ensure that the game session can allow fill up if all players join within the initial 10-second window, and can start quickly after this window if the minimum player requirement is met.</p>
 <img src="readme_assets\images\game_3.png">
 <figcaption align="center">Game with 2 Players</figcaption>
 <img src="readme_assets\images\game_4.png">
