@@ -23,3 +23,25 @@ CREATE TABLE Participations (
     FOREIGN KEY (game_id) REFERENCES Games(id)
 );
 ```
+
+# Drop Table
+
+```sql
+DROP TABLE Participations;
+DROP TABLE Games;
+DROP TABLE Users;
+```
+
+# Sampel Data
+
+```sql
+INSERT INTO Users (name, password) VALUES
+('Alex', '1234'),
+('Bella', '1234'),
+('Casey', '1234'),
+('Daisy', '1234'),
+('Emma', '1234'),
+('Fiona', '1234'),
+('Grace', '1234'),
+('Henry', '1234');
+```

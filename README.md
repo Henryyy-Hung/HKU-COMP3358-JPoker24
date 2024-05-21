@@ -280,22 +280,41 @@ JPoker24Game.jar              JPoker24GameServer.jar
 
 ## 3. Game Demo
 
-### 2.1 Login & Sign Up
+### 2.1 GUI Design
 
-### 2.2 Game PlayChapter 1 Background
+Diagram below shows the overview of client GUI. The left side shows different panels in main frame, including user profile panel, game panels in diffrent stage, and leaderborad panel. The rgiht side shows the login and sign up window. Notice that hover effect has implemented on the button. Warning pop up will not be shown here as it has been included in previous report.
 
-### 2.2 Basic Game Stages
+![GUI Overview](/readme_assets/images/gui_overview.png)
 
-### 2.2 Game Start with 2-4 Players
+### 2.2 Basic Game Play Mechanism
 
-### 2.3 Game with Multi-Session
+#### 2.2.1 Basic Game Flow (Game Stages & Database Handling)
 
-### 2.4 Evaluation & Verification of Expression
+1. **Client Initialization**: The user initiates gameplay by clicking the "Start Game" button on the client interface. This action sends a join request to the server via a JMS queue. The client then displays a waiting panel while it awaits server response.
 
-### 2.5 Game End
+  <img src="/readme_assets/images/gui_overview.png">
+  <figcaption align="center">abc</figcaption>
 
-### 2.6 Broadcast of Leaderboard Update
+2. **Server Session Handling**: Upon receiving the join request, the server either assigns the user to an existing game session or creates a new one if none are available. Each game session functions as a separate "game room," allowing for the isolation of different groups of players. Following the assignment, the server triggers a start timer, creates a database record for the session, and transmits the session ID back to the client through the JMS queue.
 
-### 2.7 Related Database Update
+3. **Client Session Subscription**: After receiving the session ID, the client subscribes to a session-specific JMS topic. This is achieved by setting a selector with the session ID, which ensures that the client only receives messages pertinent to its game room. Subsequently, the client sends a readiness message to the server via the JMS queue, indicating its preparedness to engage in the game.
 
-### 2.8 Architecture of Game
+4. **Server Game Preparation**: When all required players in a session are ready, the server finalizes the game setup by distributing necessary game elements such as cards and participant details. A game start message is then disseminated to the session's JMS topic, which has a string property of `SesseionID = '$sessionId'`. Concurrently, the server updates the game session's database record with participant details.
+
+5. **Client Game Start**: Upon reception of the game start message, client in the session update their GUI to display the cards and participant information provided. Players write expressions using the value of four cards to achieve the target number 24 and submit their answers via the JMS queue to the server.
+
+6. **Server Expression Validation**: The server validates any received expressions. If an expression correctly forms the number 24, the server updates the database with the winner's details and broadcasts the winning announcement to all players in the game room via the JMS topic. It also sends updated leaderboard information to all players.
+
+7. **Client Winner Display**: The client receives and displays the winner's details and their successful expression on the GUI, offering congratulations.
+
+8. **Client Leaderboard Update**: The client receives updated leaderboard information and refreshes the GUI, base on the information extracted from the message, to reflect the new standings.
+
+The communication design utilizes JMS queues with selectors on unique Receiver IDs for secure P2P communication between the client and server, ensuring that messages are delivered to and received from the correct parties, thereby enhancing the reliability and privacy of interactions. Meanwhile, the use of JMS topics with session ID selectors allows for efficient, targeted broadcasting to all players within a specific game room, or all online players.
+
+#### 2.2.2 Game Join Handling (Case Handling)
+
+#### 2.2.3 Multi-Session Support
+
+#### 2.2.4 Broadcast Leaderboard
+
+### 2.3 Answer Evaluation and Validation
