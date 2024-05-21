@@ -84,9 +84,11 @@ public class GameSessionManager {
     }
 
     public String addUserToAvailableSession(User user) {
+        System.out.println("- Adding player " + user.getUsername() + " to an available session");
         // Find a session that has not started and has less than 4 players
         for (GameSession session : sessions.values()) {
             if (session.getStatus() == GameSessionStatus.WAITING_FOR_PLAYERS_TO_JOIN) {
+                System.out.println("- Found an available session: " + session.getSessionId());
                 session.addPlayer(user);
                 return session.getSessionId();
             }
@@ -94,6 +96,7 @@ public class GameSessionManager {
         // If no available session is found, create a new session
         String sessionId = null;
         try {
+            System.out.println("- No available session found, creating a new session");
             sessionId = this.createNewSession();
             GameSession session = getSession(sessionId);
             session.addPlayer(user);

@@ -36,7 +36,7 @@ public class ProfileServer extends UnicastRemoteObject implements ProfileManager
 
     @Override
     public List<User> getTopUsers() {
-        List<User> topUsers = dbHandler.getTopNUsersWithGameInfo(10);
+        List<User> topUsers = dbHandler.getTopNUsersWithGameInfo(20);
         for (User user : topUsers) {
             user.maskPassword();
         }

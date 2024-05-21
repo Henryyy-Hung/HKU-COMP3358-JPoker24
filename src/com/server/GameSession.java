@@ -261,7 +261,7 @@ public class GameSession implements Serializable {
         List<User> topUsers = new ArrayList<>();
         try {
             // get top 10 users
-            topUsers = this.gameSessionManager.getUserDatabaseHandler().getTopNUsersWithGameInfo(10);
+            topUsers = this.gameSessionManager.getUserDatabaseHandler().getTopNUsersWithGameInfo(20);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("- Failed to broadcast update leaderboard message since failed to get top users");
