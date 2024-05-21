@@ -32,7 +32,7 @@ DROP TABLE Games;
 DROP TABLE Users;
 ```
 
-# Sampel Data
+# Sample Data
 
 ```sql
 INSERT INTO Users (name, password) VALUES
@@ -44,4 +44,14 @@ INSERT INTO Users (name, password) VALUES
 ('Fiona', '1234'),
 ('Grace', '1234'),
 ('Henry', '1234');
+```
+
+# Check Tabls
+
+```
+SELECT * FROM Users;
+SELECT * FROM Games;
+SELECT * FROM Participations;
+
+SELECT * FROM Participations ORDER BY game_id ASC, is_winner DESC, user_name ASC;
 ```

@@ -24,7 +24,7 @@
     
       <div class="crossnote markdown-preview  ">
       
-<h1 id="hku-comp3358-jpoker24">HKU-COMP3358-JPoker24 </h1>
+<h1 id="hku-comp3358-jpoker24-report">HKU-COMP3358-JPoker24 Report </h1>
 <p><strong>Document Directory</strong></p>
 <table>
 <thead>
@@ -141,8 +141,8 @@ FLUSH <span class="token keyword keyword-PRIVILEGES">PRIVILEGES</span><span clas
 <p>Enter you glassfish admin console at <a href="http://localhost:4848">http://localhost:4848</a>, and login to it.</p>
 </li>
 <li>
-<p>Under side bar, navigate to <code>Resources -&gt; JMS Resources -&gt; Connection Factories</code>.<br>
-<img src="./readme_assets/images/glassfish_1.png" alt="Glassfish Connection Factory"></p>
+<p>Under side bar, navigate to <code>Resources -&gt; JMS Resources -&gt; Connection Factories</code>.</p>
+<p><img src="./readme_assets/images/glassfish_1.png" alt="Glassfish Connection Factory"></p>
 </li>
 <li>
 <p>Click <code>New</code> Button on the right Panel to create a <code>JPoker24GameConnectionFactory</code>, the field <code>JNDI Name</code> is <code>jms/JPoker24GameConnectionFactory</code> and the <code>Resource Type</code> is <code>jakarta.jms.ConnectionFactory</code>.</p>
@@ -165,7 +165,7 @@ FLUSH <span class="token keyword keyword-PRIVILEGES">PRIVILEGES</span><span clas
 <h4 id="21-run-server--client">2.1 Run Server &amp; Client </h4>
 <ol>
 <li>
-<p>Open the terminal under <code>JPoker24Game</code> directory.</p>
+<p>Open the terminal under <code>JPoker24Game</code> directory. Copy <code>glassfish-6.1.0</code> and <code>mysql-connector-j_8.4.0-1ubuntu22.04_all</code>, which you download in <strong>section 1.2.3</strong> and <strong>1.3.1</strong> respectively, under <code>lib</code> if you want to directly copy and paste the command to run <code>.jar</code> file.</p>
 <p><strong>File Structure of Submitted File</strong></p>
 <pre data-role="codeBlock" data-info="" class="language-text"><code>JPoker24Game                (Open Linux Terminal Here)
 ├── lib
@@ -180,43 +180,64 @@ FLUSH <span class="token keyword keyword-PRIVILEGES">PRIVILEGES</span><span clas
 <pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">sudo</span> <span class="token function">netstat</span> <span class="token parameter variable">-tulpn</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token number">1099</span>
 </code></pre></li>
 <li>
-<p>If Occupied, enter command below to kill the thread. Replace <strong>$PID</strong> with the PID shown output of the command above. You must ensure port 1099 is available.</p>
+<p>If Occupied, enter command below to kill the thread. Replace <strong>$PID</strong> with the PID shown output of the command above. You must ensure port 1099 is available. A demo can found in image.</p>
 <pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">sudo</span> <span class="token function">kill</span> <span class="token parameter variable">-9</span> <span class="token variable">$PID</span>
-</code></pre></li>
+</code></pre><p><img src="readme_assets\images\release_port.png" alt="alt text"></p>
+</li>
 <li>
-<p>To start the server, use the command template below:</p>
-<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">java</span> <span class="token parameter variable">-cp</span> <span class="token string">"<span class="token variable">$server_jar_path</span>\
-:<span class="token variable">$mysql_connector_path</span>\
-:<span class="token variable">$gf_client_path</span>"</span> <span class="token punctuation">\</span>
-<span class="token parameter variable">-Djava.security.manager</span> <span class="token parameter variable">-Djava.security.policy</span><span class="token operator">=</span><span class="token variable">$security_policy_path</span> <span class="token punctuation">\</span>
-com.server.ServerMain
-</code></pre><p>4.1 Replace <strong>$server_jar_path</strong> with path to <strong>JPoker24GameServer.jar</strong>.</p>
-<p>4.2 Replace <strong>$mysql_connector_path</strong> with the path to <strong>mysql-connector-j-8.4.0.jar</strong>.</p>
-<p>4.3 Replace <strong>$gf_client_path</strong> with path to <strong>gf-client.jar</strong> of glassfish 6.1.0.</p>
-<p>4.4 Replace <strong>$security_policy_path</strong> with path to <strong>security.policy</strong>.</p>
-<p>4.5 Below are the command if you run in the <code>/JPoker24Game</code> directory and using <code>lib</code> provided:</p>
+<p>To start the server, use command below if you follow the directory structure in 1.</p>
 <pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">java</span> <span class="token parameter variable">-cp</span> <span class="token string">"JPoker24GameServer.jar\
 :lib/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar\
 :lib/mysql-connector-j_8.4.0-1ubuntu22.04_all/usr/share/java/mysql-connector-j-8.4.0.jar"</span><span class="token punctuation">\</span>
 <span class="token parameter variable">-Djava.security.manager</span> <span class="token punctuation">\</span>
 <span class="token parameter variable">-Djava.security.policy</span><span class="token operator">=</span>security.policy <span class="token punctuation">\</span>
 com.server.ServerMain
+</code></pre><p><img src="readme_assets\images\run_server_jar.png" alt="alt text"></p>
+<p>If you are run at other place, or did not proper configure the <code>lib</code> directory, please use the command template below to execute the jar file.</p>
+<ul>
+<li>
+<p>Replace <strong>$server_jar_path</strong> with path to <strong>JPoker24GameServer.jar</strong>.</p>
+</li>
+<li>
+<p>Replace <strong>$mysql_connector_path</strong> with the path to <strong>mysql-connector-j-8.4.0.jar</strong>.</p>
+</li>
+<li>
+<p>Replace <strong>$gf_client_path</strong> with path to <strong>gf-client.jar</strong> of glassfish 6.1.0.</p>
+</li>
+<li>
+<p>Replace <strong>$security_policy_path</strong> with path to <strong>security.policy</strong>.</p>
+</li>
+</ul>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">java</span> <span class="token parameter variable">-cp</span> <span class="token string">"<span class="token variable">$server_jar_path</span>\
+:<span class="token variable">$mysql_connector_path</span>\
+:<span class="token variable">$gf_client_path</span>"</span> <span class="token punctuation">\</span>
+<span class="token parameter variable">-Djava.security.manager</span> <span class="token parameter variable">-Djava.security.policy</span><span class="token operator">=</span><span class="token variable">$security_policy_path</span> <span class="token punctuation">\</span>
+com.server.ServerMain
 </code></pre></li>
 <li>
-<p>To start the client, use the command template below:</p>
-<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">java</span> <span class="token parameter variable">-cp</span> <span class="token string">"<span class="token variable">$client_jar_path</span>\
-:<span class="token variable">$gf_client_path</span>"</span> <span class="token punctuation">\</span>
-<span class="token parameter variable">-Djava.security.manager</span> <span class="token punctuation">\</span>
-<span class="token parameter variable">-Djava.security.policy</span><span class="token operator">=</span><span class="token variable">$security_policy_path</span> <span class="token punctuation">\</span>
-com.client.ClientMain localhost
-</code></pre><p>5.1 Replace <strong>$client_jar_path</strong> with path to <strong>JPoker24Game.jar</strong>.</p>
-<p>5.2 Replace <strong>$gf_client_path</strong> with path to <strong>gf-client.jar</strong> of glassfish 6.1.0.</p>
-<p>5.3 Replace <strong>$security_policy_path</strong> with path to <strong>security.policy</strong>.<br>
-5.4 Below are the command if you run in the <code>/JPoker24Game</code> directory and using <code>lib</code> provided::</p>
+<p>To start the server, use command below if you follow the directory structure in 1.</p>
 <pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">java</span> <span class="token parameter variable">-cp</span> <span class="token string">"JPoker24Game.jar\
 :lib/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar"</span> <span class="token punctuation">\</span>
 <span class="token parameter variable">-Djava.security.manager</span> <span class="token punctuation">\</span>
 <span class="token parameter variable">-Djava.security.policy</span><span class="token operator">=</span>security.policy <span class="token punctuation">\</span>
+com.client.ClientMain localhost
+</code></pre><p><img src="readme_assets\images\run_client_jar.png" alt="alt text"></p>
+<p>If you are run at other place, or did not proper configure the <code>lib</code> directory, please use the command template below to execute the jar file.</p>
+<ul>
+<li>
+<p>Replace <strong>$client_jar_path</strong> with path to <strong>JPoker24Game.jar</strong>.</p>
+</li>
+<li>
+<p>Replace <strong>$gf_client_path</strong> with path to <strong>gf-client.jar</strong> of glassfish 6.1.0.</p>
+</li>
+<li>
+<p>Replace <strong>$security_policy_path</strong> with path to <strong>security.policy</strong>.</p>
+</li>
+</ul>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">java</span> <span class="token parameter variable">-cp</span> <span class="token string">"<span class="token variable">$client_jar_path</span>\
+:<span class="token variable">$gf_client_path</span>"</span> <span class="token punctuation">\</span>
+<span class="token parameter variable">-Djava.security.manager</span> <span class="token punctuation">\</span>
+<span class="token parameter variable">-Djava.security.policy</span><span class="token operator">=</span><span class="token variable">$security_policy_path</span> <span class="token punctuation">\</span>
 com.client.ClientMain localhost
 </code></pre></li>
 <li>
@@ -240,23 +261,131 @@ com.client.ClientMain localhost
 <p>Repeatly enter commands below to inspect the three tables we created.</p>
 <pre data-role="codeBlock" data-info="sql" class="language-sql sql"><code><span class="token keyword keyword-SELECT">SELECT</span> <span class="token operator">*</span> <span class="token keyword keyword-FROM">FROM</span> Users<span class="token punctuation">;</span>
 <span class="token keyword keyword-SELECT">SELECT</span> <span class="token operator">*</span> <span class="token keyword keyword-FROM">FROM</span> Games<span class="token punctuation">;</span>
-<span class="token keyword keyword-SELECT">SELECT</span> <span class="token operator">*</span> <span class="token keyword keyword-FROM">FROM</span> Participations<span class="token punctuation">;</span>
+<span class="token keyword keyword-SELECT">SELECT</span> <span class="token operator">*</span> <span class="token keyword keyword-FROM">FROM</span> Participations <span class="token keyword keyword-ORDER">ORDER</span> <span class="token keyword keyword-BY">BY</span> game_id <span class="token keyword keyword-ASC">ASC</span><span class="token punctuation">,</span> is_winner <span class="token keyword keyword-DESC">DESC</span><span class="token punctuation">,</span> user_name <span class="token keyword keyword-ASC">ASC</span><span class="token punctuation">;</span>
 </code></pre></li>
 </ol>
 <h3 id="23-view-source-code">2.3 View Source Code </h3>
-<p>Following the instruction, the source code has been packed within the <code>.jar</code> file. To view the source code, please decompress the <code>.jar</code> file, and browse the package under <code>com</code> directory.</p>
-<p>Please be noted that, there are some common packages shared between <code>JPoker24Game.jar</code> and <code>JPoker24GameServer.jar</code>, thus, just read once the packages with the same package name.</p>
-<h2 id="3-game-demo">3. Game Demo </h2>
-<h3 id="21-login--sign-up">2.1 Login &amp; Sign Up </h3>
-<h3 id="22-game-play">2.2 Game Play </h3>
-<h3 id="22-basic-game-stages">2.2 Basic Game Stages </h3>
-<h3 id="22-game-start-with-2-4-players">2.2 Game Start with 2-4 Players </h3>
-<h3 id="23-game-with-multi-session">2.3 Game with Multi-Session </h3>
-<h3 id="24-evaluation--verification-of-expression">2.4 Evaluation &amp; Verification of Expression </h3>
-<h3 id="25-game-end">2.5 Game End </h3>
-<h3 id="26-broadcast-of-leaderboard-update">2.6 Broadcast of Leaderboard Update </h3>
-<h3 id="27-related-database-update">2.7 Related Database Update </h3>
-<h3 id="28-architecture-of-game">2.8 Architecture of Game </h3>
+<p>Following the assignment instruction, the source code has been packed within the <code>.jar</code> file. To view the source code, please decompress the <code>.jar</code> file by command below.</p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>jar xf filename.jar
+</code></pre><p>Regarding the strucuture of <code>.jar</code> file, all the source code are under <code>com</code> directory. The <code>jms</code>, <code>common</code>, <code>enum</code>, <code>utils</code> package are shared by both server and client, so view them once is enough.</p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>JPoker24Game.jar              JPoker24GameServer.jar
+├── assets                    ├── com
+│   └── images                │   ├── server
+├── com                       │   ├── handler
+│   ├── client                │   ├── jms
+│   ├── ui                    │   ├── common
+│   ├── jms                   │   ├── enums
+│   ├── common                │   └── utils
+│   ├── enums                 └── META-INF
+│   └── utils                     └── MANIFEST.MF
+└── META-INF
+    └── MANIFEST.MF
+</code></pre><h2 id="3-game-demo">3. Game Demo </h2>
+<h3 id="21-gui-design">2.1 GUI Design </h3>
+<p>Diagram below shows the overview of client GUI. The left side shows different panels in main frame, including user profile panel, game panels in diffrent stage, and leaderborad panel. The rgiht side shows the login and sign up window. Notice that hover effect has implemented on the button. Warning pop up will not be shown here as it has been included in previous report.</p>
+<p><img src="readme_assets\images\gui_overview.png" alt="GUI Overview"></p>
+<h3 id="22-basic-game-play-mechanism">2.2 Basic Game Play Mechanism </h3>
+<h4 id="221-basic-game-flow-game-stages--database-handling">2.2.1 Basic Game Flow (Game Stages &amp; Database Handling) </h4>
+<ol>
+<li><strong>Client Initialization</strong>: The user initiates gameplay by clicking the "Start Game" button on the client interface. This action sends a join request to the server via a JMS queue. The client then displays a waiting panel while it awaits server response.</li>
+</ol>
+<img src="readme_assets\images\game_1.png">
+<figcaption align="center">Initial Client State (2 Players &amp; 1 Outsider)</figcaption>
+<img src="readme_assets\images\game_2.png">
+<figcaption align="center">One Player Click on Start Game</figcaption>
+<img src="readme_assets\images\client_log_1.png">
+<figcaption align="center">Client Side Log for Alex Sending Joining Request</figcaption>
+<img src="readme_assets\images\db_log_1.png">
+<figcaption align="center">Database Log at Initial State (Empty)</figcaption>
+<ol start="2">
+<li><strong>Server Session Handling</strong>: Upon receiving the join request, the server either assigns the user to an existing game session or creates a new one if none are available. Each game session functions as a separate "game room," allowing for the isolation of different groups of players. Following the assignment, the session triggers a start timer which we will discuss later, creates a database record for the session, and transmits the session ID back to the client through the JMS queue.</li>
+</ol>
+<img src="readme_assets\images\server_log_1.png">
+<figcaption align="center">Server Side Log for Session Creation and Assignment</figcaption>
+<img src="readme_assets\images\db_log_2.png">
+<figcaption align="center">Game Session Session Record Creation in Databse</figcaption>
+<ol start="3">
+<li><strong>Client Session Subscription</strong>: After receiving the session ID, the client subscribes to a session-specific JMS topic. This is achieved by setting a selector with the session ID, which ensures that the client only receives messages pertinent to its game room. Subsequently, the client sends a readiness message to the server via the JMS queue, indicating its preparedness to engage in the game.</li>
+</ol>
+<img src="readme_assets\images\client_log_2.png">
+<figcaption align="center">Client Side Log for Session Subscription of Alex</figcaption>
+<ol start="4">
+<li><strong>Server Game Initialization</strong>: When all required players in a session are ready, the server finalizes the game setup by distributing necessary game elements such as cards and participant details. A game start message is then disseminated to the session's JMS topic, which has a string property of <code>SesseionID = '$sessionId'</code>. Concurrently, the server updates the game session's database record with participant details.</li>
+</ol>
+<img src="readme_assets\images\server_log_2.png">
+<figcaption align="center">Server Side Log for Initialization of Game</figcaption>
+<img src="readme_assets\images\db_log_3.png">
+<figcaption align="center">Database Log for Participation Record</figcaption>
+<ol start="5">
+<li><strong>Client Game Start</strong>: Upon reception of the game start message, client in the session update their GUI to display the cards and participant information provided. Players write expressions using the value of four cards to achieve the target number 24 and submit their answers via the JMS queue to the server. The submission of answer is done by entering expression in input field and press <code>ENTER</code>.</li>
+</ol>
+<img src="readme_assets\images\client_log_3.png">
+<figcaption align="center">Client Log for Receiving Game Start Message</figcaption>
+<img src="readme_assets\images\game_3.png">
+<figcaption align="center">Game Started and One User Entering Correct Answer</figcaption>
+<img src="readme_assets\images\client_log_4.png">
+<figcaption align="center">Client Log for Answer Submission</figcaption>
+<ol start="6">
+<li><strong>Server Expression Validation</strong>: The server validates any received expressions. If an expression correctly forms the number 24, the server updates the database with the winner's details and broadcasts the winning announcement to all players in the game room via the JMS topic. It also sends updated leaderboard information to all players.</li>
+</ol>
+<img src="readme_assets\images\server_log_3.png">
+<figcaption align="center">Server Side Log for Answer Processing, Winner Broadcast to sesion players &amp; Leaderboard Broadcast to all users</figcaption>
+<img src="readme_assets\images\db_log_4.png">
+<figcaption align="center">Database Log on Updating Game Completion Time and Winner</figcaption>
+<ol start="7">
+<li>
+<p><strong>Client Winner Display</strong>: The client receives and displays the winner's details and their successful expression on the GUI, offering congratulations. Also, this triggers players of the session to update their personal profile and corresponding panel, as it changes.</p>
+</li>
+<li>
+<p><strong>Client Leaderboard Update</strong>: The client receives updated leaderboard information and refreshes the GUI, base on the information extracted from the message, to reflect the new standings.</p>
+</li>
+</ol>
+<img src="readme_assets\images\client_log_5.png">
+<figcaption align="center">Game Session End Message &amp; LeaderBoard Update Message Received</figcaption>
+<img src="readme_assets\images\game_4.png">
+<figcaption align="center">Display of Game Winner for Session Players (left) &amp; Global Leaderboard Update (right)</figcaption>
+<img src="readme_assets\images\game_5.png">
+<figcaption align="center">Personal Profile Update for Session Player</figcaption>
+<ol start="9">
+<li>The communication design utilizes JMS queues with selectors on unique Receiver IDs for secure P2P communication between the client and server, ensuring that messages are delivered to and received from the correct parties, thereby enhancing the reliability and privacy of interactions. Meanwhile, the use of JMS topics with session ID selectors allows for efficient, targeted broadcasting to all players within a specific game room, or all online players.</li>
+</ol>
+<h4 id="222-game-join-handling-case-handling">2.2.2 Game Join Handling (Case Handling) </h4>
+<p>In the game, various mechanisms have been developed to manage how players can join a game. Initially, the game room status is set to <code>WAITING_FOR_PLAYERS_TO_JOIN</code>.</p>
+<p>The game room requires a minimum of 2 players and can accommodate a maximum of 4 players.</p>
+<p>Players have a 10-second window to join the game room, provided the maximum capacity has not been reached. If the maximum capacity is reached within this time, the game room status changes to <code>WAITING_FOR_PLAYERS_TO_READY</code>.</p>
+<p>If the minimum capacity is met 10 seconds after the game room creation, or upon subsequent player joins, the status also transitions to <code>WAITING_FOR_PLAYERS_TO_READY</code>.</p>
+<p>Upon the current status is <code>WAITING_FOR_PLAYERS_TO_READY</code> and receiving a readiness confirmation from each player, the game checks if all players are ready. If so, the game immediately proceeds to prepare the necessary game materials and broadcasts them to the players in the session.</p>
+<p>These settings ensure that the game session can fill up quickly if all players join within the initial 10-second window, and can start promptly after this window if the minimum player requirement is met.</p>
+<img src="readme_assets\images\game_3.png">
+<figcaption align="center">Game with 2 Players</figcaption>
+<img src="readme_assets\images\game_4.png">
+<figcaption align="center">Game with 2 Players (Win)</figcaption>
+<img src="readme_assets\images\game_6.png">
+<figcaption align="center">Game with 3 Players</figcaption>
+<img src="readme_assets\images\game_7.png">
+<figcaption align="center">Game with 3 Players(Win)</figcaption>
+<img src="readme_assets\images\game_8.png">
+<figcaption align="center">Game with 4 Players</figcaption>
+<img src="readme_assets\images\game_9.png">
+<figcaption align="center">Game with 4 Players (Win)</figcaption>
+<h4 id="223-multi-session-support-session-management">2.2.3 Multi-Session Support (Session Management) </h4>
+<p>The game suppor multiple session (game room). Image below shows the 4 game session playing at the same time, each group have 2 users. The sessions are <code>TOP LEFT</code>, <code>TOP RIGHT</code>, <code>BOTTOM LEFT</code>, <code>BOTTOM RIGHT</code>.</p>
+<img src="readme_assets\images\game_10.png">
+<figcaption align="center">Game with 4 Room</figcaption>
+<img src="readme_assets\images\game_11.png">
+<figcaption align="center">Game with 4 Room (4 Separate Win)</figcaption>
+<h3 id="23-answer-evaluation-and-validation">2.3 Answer Evaluation and Validation </h3>
+<p>The section above already shows the ability of app handling a string expression, especially calculating whether the result equals to 24. This section will majorly show the case including:</p>
+<ul>
+<li>validation: missing number</li>
+<li>validation: excess number</li>
+<li>validation: use of invalid operators</li>
+<li>evaluation: incorrect result of valid expression (not equal to 24)</li>
+</ul>
+<p>Please view these cases from left to right in the image below:</p>
+<img src="readme_assets\images\game_12.png">
+<figcaption align="center">Game with 4 Room</figcaption>
+<p>Note: for the all these cases, the game will allow player to have more trial by click the <code>OK</code> button.</p>
 
       </div>
       
