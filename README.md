@@ -149,8 +149,7 @@ Quit MySQL Console.
    │   ├── glassfish-6.1.0
    │   └── mysql-connector-j_8.4.0-1ubuntu22.04_all
    ├── JPoker24Game.jar
-   ├── JPoker24GameServer.jar
-   └── security.policy
+   └── JPoker24GameServer.jar
    ```
 
 2. Enter command below to check the **availability of port 1099**.
@@ -173,8 +172,6 @@ Quit MySQL Console.
    java -cp "JPoker24GameServer.jar\
    :lib/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar\
    :lib/mysql-connector-j_8.4.0-1ubuntu22.04_all/usr/share/java/mysql-connector-j-8.4.0.jar"\
-   -Djava.security.manager \
-   -Djava.security.policy=security.policy \
    com.server.ServerMain
    ```
 
@@ -194,7 +191,6 @@ Quit MySQL Console.
    java -cp "$server_jar_path\
    :$mysql_connector_path\
    :$gf_client_path" \
-   -Djava.security.manager -Djava.security.policy=$security_policy_path \
    com.server.ServerMain
    ```
 
@@ -203,8 +199,6 @@ Quit MySQL Console.
    ```bash
    java -cp "JPoker24Game.jar\
    :lib/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar" \
-   -Djava.security.manager \
-   -Djava.security.policy=security.policy \
    com.client.ClientMain localhost
    ```
 
@@ -221,17 +215,7 @@ Quit MySQL Console.
    ```bash
    java -cp "$client_jar_path\
    :$gf_client_path" \
-   -Djava.security.manager \
-   -Djava.security.policy=$security_policy_path \
    com.client.ClientMain localhost
-   ```
-
-6. Ensure you provide sufficient permission in security policy. Below are a safe option.
-
-   ```policy
-   grant {
-       permission java.security.AllPermission;
-   };
    ```
 
 ### 2.2 Inspect the MySQL Database
