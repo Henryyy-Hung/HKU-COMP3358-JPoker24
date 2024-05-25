@@ -3,6 +3,8 @@ package com.server;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import com.security.SecurityManagerUtil;
+
 public class ServerMain {
     
     public static void main(String[] args) {
@@ -14,8 +16,8 @@ public class ServerMain {
             Registry registry = LocateRegistry.createRegistry(port);
             System.out.println("RMI registry created on port " + port + ".");
 
-            // set security manager
-            System.setSecurityManager(new SecurityManager());
+            // enforce all permissions
+            SecurityManagerUtil.enforceAllPermissions();
 
             // create remote services and bind them to the registry
             AuthenticationServer auth = new AuthenticationServer(); 

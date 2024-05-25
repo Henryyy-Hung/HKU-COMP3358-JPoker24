@@ -11,7 +11,6 @@ lib_dir="lib"
 src_dir="src"
 build_dir="build"
 
-security_policy_path="policy/security.policy"
 gf_client_path="$lib_dir/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar"
 mysql_connector_path="$lib_dir/mysql-connector-j_8.4.0-1ubuntu22.04_all/usr/share/java/mysql-connector-j-8.4.0.jar"
 server_jar_path="$build_dir/$server_jar"
@@ -65,14 +64,14 @@ start_server() {
     # Check and potentially release the port
     check_and_release_port
     echo "> Starting the Server..."
-    java -cp ":$bin_dir:$mysql_connector_path:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy_path com.server.ServerMain
+    java -cp ":$bin_dir:$mysql_connector_path:$gf_client_path" com.server.ServerMain
     echo ""
 }
 
 # Function to start the client
 start_client() {
     echo "> Starting the Client..."
-    java -cp ":$bin_dir:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy_path com.client.ClientMain localhost
+    java -cp ":$bin_dir:$gf_client_path" com.client.ClientMain localhost
     echo ""
 }
 
@@ -81,14 +80,14 @@ start_server_jar() {
     # Check and potentially release the port
     check_and_release_port
     echo "> Starting the $server_jar..."
-    java -cp "$server_jar_path:$mysql_connector_path:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy_path com.server.ServerMain
+    java -cp "$server_jar_path:$mysql_connector_path:$gf_client_path"  com.server.ServerMain
     echo ""
 }
 
 # Function to start the client in jar
 start_client_jar() {
     echo "> Starting the $client_jar..."
-    java -cp "$client_jar_path:$gf_client_path" -Djava.security.manager -Djava.security.policy=$security_policy_path com.client.ClientMain localhost
+    java -cp "$client_jar_path:$gf_client_path" com.client.ClientMain localhost
     echo ""
 }
 
@@ -121,14 +120,14 @@ build() {
     (cd temp_jar/client && jar cvfm $client_jar META-INF/MANIFEST.MF .)
 
     # Copy compiled classes and resources specifically for the server
-    cp -r bin/com/{common,enums,handler,jms,server,utils} temp_jar/server/com
+    cp -r bin/com/{common,enums,handler,jms,server,utils,security} temp_jar/server/com
     {
         echo "Main-Class: com.server.ServerMain"
         echo "Class-Path: $mysql_connector_path $gf_client_path"
     } > temp_jar/server/META-INF/MANIFEST.MF
 
     # Copy source files specifically for the server
-    cp -r src/com/{common,enums,handler,jms,server,utils} temp_jar/server/com
+    cp -r src/com/{common,enums,handler,jms,server,utils,security} temp_jar/server/com
 
     # Package the server JAR
     (cd temp_jar/server && jar cvfm $server_jar META-INF/MANIFEST.MF .)
