@@ -44,4 +44,4 @@ Note: You could find the `.jar` file at `/lib` directory.
 ## 6. Notes
 - Ensure all services and the database are running before starting the game server and clients.
 - The application is configured to run on localhost. Adjust the configurations if deploying on a different server or in a distributed environment.
-- For detailed report, please refer to [here](/doc/report.md)
+- For detailed report, please refer to [here](/doc/report.md).

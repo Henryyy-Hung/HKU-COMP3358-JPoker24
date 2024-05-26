@@ -7,7 +7,7 @@
 |2|How to Run|[Link](#2-how-to-run-the-program)|
 |3|Game Demo|[Link](#3-game-demo)|
 
-**Note**: This report is only for submitting assignment with specified file structure, it is based on the submitted files instead of actual file structure of the project.
+**Note**: This report is only for submitting assignment, such that it is based on the structure of submitted files instead of actual file structure of the project.
 
 ## 1. Environment Set Up
 
