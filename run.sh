@@ -1,20 +1,29 @@
 #!/bin/bash
 
 # Define string variables
+
+# Port number for the server
 port_number="1099"
 
-server_jar="JPoker24GameServer.jar"
-client_jar="JPoker24Game.jar"
-
+# Directories
 bin_dir="bin"
-lib_dir="lib"
 src_dir="src"
-build_dir="build"
 
+# lib directory contains the GlassFish and MySQL Connector JAR files
+lib_dir="lib"
 gf_client_path="$lib_dir/glassfish-6.1.0/glassfish6/glassfish/lib/gf-client.jar"
 mysql_connector_path="$lib_dir/mysql-connector-j_8.4.0-1ubuntu22.04_all/usr/share/java/mysql-connector-j-8.4.0.jar"
+
+# Build directory contains the compiled classes and JAR files
+build_dir="build"
+server_jar="JPoker24GameServer.jar"
+client_jar="JPoker24Game.jar"
 server_jar_path="$build_dir/$server_jar"
 client_jar_path="$build_dir/$client_jar"
+
+# Main class for the server and client
+server_main="com.jpoker24.server.ServerMain"
+client_main="com.jpoker24.client.ClientMain"
 
 # Check for user input
 if [ "$#" -eq 0 ]; then
@@ -30,7 +39,7 @@ compile() {
     echo ""
 
     echo "> Compiling the Java code..."
-    javac -cp ":$gf_client_path" -d $bin_dir -sourcepath $src_dir $src_dir/com/**/*.java
+    javac -cp ":$gf_client_path" -d $bin_dir -sourcepath $src_dir $src_dir/com/**/**/*.java
     echo ""
 }
 
@@ -64,14 +73,14 @@ start_server() {
     # Check and potentially release the port
     check_and_release_port
     echo "> Starting the Server..."
-    java -cp ":$bin_dir:$mysql_connector_path:$gf_client_path" com.server.ServerMain
+    java -cp ":$bin_dir:$mysql_connector_path:$gf_client_path" $server_main
     echo ""
 }
 
 # Function to start the client
 start_client() {
     echo "> Starting the Client..."
-    java -cp ":$bin_dir:$gf_client_path" com.client.ClientMain localhost
+    java -cp ":$bin_dir:$gf_client_path" $client_main localhost
     echo ""
 }
 
@@ -80,14 +89,14 @@ start_server_jar() {
     # Check and potentially release the port
     check_and_release_port
     echo "> Starting the $server_jar..."
-    java -cp "$server_jar_path:$mysql_connector_path:$gf_client_path"  com.server.ServerMain
+    java -cp "$server_jar_path:$mysql_connector_path:$gf_client_path" $server_main
     echo ""
 }
 
 # Function to start the client in jar
 start_client_jar() {
     echo "> Starting the $client_jar..."
-    java -cp "$client_jar_path:$gf_client_path" com.client.ClientMain localhost
+    java -cp "$client_jar_path:$gf_client_path" $client_main localhost
     echo ""
 }
 
@@ -99,35 +108,35 @@ build() {
     echo "> Building JAR files..."
 
     # Prepare directories for JAR packaging
-    mkdir -p temp_jar/client/META-INF
-    mkdir -p temp_jar/client/com
-    mkdir -p temp_jar/server/META-INF
-    mkdir -p temp_jar/server/com
     mkdir -p build
+    mkdir -p temp_jar/client/META-INF
+    mkdir -p temp_jar/client/com/jpoker24
+    mkdir -p temp_jar/server/META-INF
+    mkdir -p temp_jar/server/com/jpoker24
 
     # Copy compiled classes and resources specifically for the client
-    cp -r bin/com/{client,common,enums,jms,ui,utils} temp_jar/client/com
-    cp -r assets temp_jar/client
+    cp -r bin/com/jpoker24/{client,common,enums,jms,ui,utils} temp_jar/client/com/jpoker24
+    cp -r resources temp_jar/client
     {
-        echo "Main-Class: com.client.ClientMain"
+        echo "Main-Class: $client_main"
         echo "Class-Path: $mysql_connector_path $gf_client_path"
     } > temp_jar/client/META-INF/MANIFEST.MF
 
     # Copy source files specifically for the client
-    cp -r src/com/{client,common,enums,jms,ui,utils} temp_jar/client/com
+    cp -r src/com/jpoker24/{client,common,enums,jms,ui,utils} temp_jar/client/com/jpoker24
 
     # Package the client JAR
     (cd temp_jar/client && jar cvfm $client_jar META-INF/MANIFEST.MF .)
 
     # Copy compiled classes and resources specifically for the server
-    cp -r bin/com/{common,enums,handler,jms,server,utils,security} temp_jar/server/com
+    cp -r bin/com/jpoker24/{common,enums,handler,jms,server,utils,security} temp_jar/server/com/jpoker24
     {
-        echo "Main-Class: com.server.ServerMain"
+        echo "Main-Class: $server_main"
         echo "Class-Path: $mysql_connector_path $gf_client_path"
     } > temp_jar/server/META-INF/MANIFEST.MF
 
     # Copy source files specifically for the server
-    cp -r src/com/{common,enums,handler,jms,server,utils,security} temp_jar/server/com
+    cp -r src/com/jpoker24/{common,enums,handler,jms,server,utils,security} temp_jar/server/com/jpoker24
 
     # Package the server JAR
     (cd temp_jar/server && jar cvfm $server_jar META-INF/MANIFEST.MF .)

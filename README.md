@@ -117,23 +117,23 @@ Quit MySQL Console.
 - Enter you glassfish admin console at [http://localhost:4848](http://localhost:4848), and login to it.
 - Under side bar, navigate to `Resources -> JMS Resources -> Connection Factories`.
 
-  ![Glassfish Connection Factory](./readme_assets/images/glassfish_1.png)
+  ![Glassfish Connection Factory](./assets/images/glassfish_1.png)
 
 - Click `New` Button on the right Panel to create a `JPoker24GameConnectionFactory`, the field `JNDI Name` is `jms/JPoker24GameConnectionFactory` and the `Resource Type` is `jakarta.jms.ConnectionFactory`.
 
-  ![Glassfish Connection Factory Set Up](./readme_assets/images/glassfish_2.png)
+  ![Glassfish Connection Factory Set Up](./assets/images/glassfish_2.png)
 
 - Under side bar, navigate to `Resources -> JMS Resources -> Destination Resources`.
 
-  ![Glassfish Destination Resources](./readme_assets/images/glassfish_3.png)
+  ![Glassfish Destination Resources](./assets/images/glassfish_3.png)
 
 - Click `New` Button on the right Panel to create a `JPoker24GameQueue`, the field `JNDI Name` is `jms/JPoker24GameQueue`, the `Physical Destination Name` is `JPoker24GameQueue`, and the `Resource Type` is `jakarta.jms.Queue`.
 
-  ![Glassfish Destination Resources](./readme_assets/images/glassfish_4.png)
+  ![Glassfish Destination Resources](./assets/images/glassfish_4.png)
 
 - Click `New` Button on the right Panel to create a `JPoker24GameTopic`, the field `JNDI Name` is `jms/JPoker24GameTopic`, the `Physical Destination Name` is `JPoker24GameTopic`, and the `Resource Type` is `jakarta.jms.Topic`.
 
-  ![Glassfish Destination Resources](./readme_assets/images/glassfish_5.png)
+  ![Glassfish Destination Resources](./assets/images/glassfish_5.png)
 
 ## 2 How to Run the Program
 
@@ -164,7 +164,7 @@ Quit MySQL Console.
    sudo kill -9 $PID
    ```
 
-   ![alt text](/readme_assets/images/release_port.png)
+   ![alt text](/assets/images/release_port.png)
 
 4. To start the server, use command below if you follow the directory structure in 1.
 
@@ -175,7 +175,7 @@ Quit MySQL Console.
    com.server.ServerMain
    ```
 
-   ![alt text](/readme_assets/images/run_server_jar.png)
+   ![alt text](/assets/images/run_server_jar.png)
 
    If you are run at other place, or did not proper configure the `lib` directory, please use the command template below to execute the jar file.
 
@@ -202,7 +202,7 @@ Quit MySQL Console.
    com.client.ClientMain localhost
    ```
 
-   ![alt text](/readme_assets/images/run_client_jar.png)
+   ![alt text](/assets/images/run_client_jar.png)
 
    If you are run at other place, or did not proper configure the `lib` directory, please use the command template below to execute the jar file.
 
@@ -268,7 +268,7 @@ JPoker24Game.jar              JPoker24GameServer.jar
 
 Diagram below shows the overview of client GUI. The left side shows different panels in main frame, including user profile panel, game panels in diffrent stage, and leaderborad panel. The rgiht side shows the login and sign up window. Notice that hover effect has implemented on the button. Warning pop up will not be shown here as it has been included in previous report.
 
-![GUI Overview](/readme_assets/images/gui_overview.png)
+![GUI Overview](/assets/images/gui_overview.png)
 
 ### 2.2 Basic Game Play Mechanism
 
@@ -276,69 +276,69 @@ Diagram below shows the overview of client GUI. The left side shows different pa
 
 1. **Client Initialization**: The user initiates gameplay by clicking the "Start Game" button on the client interface. This action sends a join request to the server via a JMS queue. The client then displays a waiting panel while it awaits server response.
 
-<img src="/readme_assets/images/game_1.png">
+<img src="/assets/images/game_1.png">
 <figcaption align="center">Initial Client State (2 Players & 1 Outsider)</figcaption>
 
-<img src="/readme_assets/images/game_2.png">
+<img src="/assets/images/game_2.png">
 <figcaption align="center">One Player Click on Start Game</figcaption>
 
-<img src="/readme_assets/images/client_log_1.png">
+<img src="/assets/images/client_log_1.png">
 <figcaption align="center">Client Side Log for Alex Sending Joining Request</figcaption>
 
-<img src="/readme_assets/images/db_log_1.png">
+<img src="/assets/images/db_log_1.png">
 <figcaption align="center">Database Log at Initial State (Empty)</figcaption>
 
 2. **Server Session Handling**: Upon receiving the join request, the server either assigns the user to an existing game session or creates a new one if none are available. Each game session functions as a separate "game room," allowing for the isolation of different groups of players. Following the assignment, the session triggers a start timer which we will discuss later, creates a database record for the session, and transmits the session ID back to the client through the JMS queue.
 
-<img src="/readme_assets/images/server_log_1.png">
+<img src="/assets/images/server_log_1.png">
 <figcaption align="center">Server Side Log for Session Creation and Assignment</figcaption>
 
-<img src="/readme_assets/images/db_log_2.png">
+<img src="/assets/images/db_log_2.png">
 <figcaption align="center">Game Session Session Record Creation in Databse</figcaption>
 
 3. **Client Session Subscription**: After receiving the session ID, the client subscribes to a session-specific JMS topic. This is achieved by setting a selector with the session ID, which ensures that the client only receives messages pertinent to its game room. Subsequently, the client sends a readiness message to the server via the JMS queue, indicating its preparedness to engage in the game.
 
-<img src="/readme_assets/images/client_log_2.png">
+<img src="/assets/images/client_log_2.png">
 <figcaption align="center">Client Side Log for Session Subscription of Alex</figcaption>
 
 4. **Server Game Initialization**: When all required players in a session are ready, the server finalizes the game setup by distributing necessary game elements such as cards and participant details. A game start message is then disseminated to the session's JMS topic, which has a string property of `SesseionID = '$sessionId'`. Concurrently, the server updates the game session's database record with participant details.
 
-<img src="/readme_assets/images/server_log_2.png">
+<img src="/assets/images/server_log_2.png">
 <figcaption align="center">Server Side Log for Initialization of Game</figcaption>
 
-<img src="/readme_assets/images/db_log_3.png">
+<img src="/assets/images/db_log_3.png">
 <figcaption align="center">Database Log for Participation Record</figcaption>
 
 5. **Client Game Start**: Upon reception of the game start message, client in the session update their GUI to display the cards and participant information provided. Players write expressions using the value of four cards to achieve the target number 24 and submit their answers via the JMS queue to the server. The submission of answer is done by entering expression in input field and press `ENTER`.
 
-<img src="/readme_assets/images/client_log_3.png">
+<img src="/assets/images/client_log_3.png">
 <figcaption align="center">Client Log for Receiving Game Start Message</figcaption>
 
-<img src="/readme_assets/images/game_3.png">
+<img src="/assets/images/game_3.png">
 <figcaption align="center">Game Started and One User Entering Correct Answer</figcaption>
 
-<img src="/readme_assets/images/client_log_4.png">
+<img src="/assets/images/client_log_4.png">
 <figcaption align="center">Client Log for Answer Submission</figcaption>
 
 6. **Server Expression Validation**: The server validates any received expressions. If an expression correctly forms the number 24, the server updates the database with the winner's details and broadcasts the winning announcement to all players in the game room via the JMS topic. It also sends updated leaderboard information to all players.
 
-<img src="/readme_assets/images/server_log_3.png">
+<img src="/assets/images/server_log_3.png">
 <figcaption align="center">Server Side Log for Answer Processing, Winner Broadcast to sesion players & Leaderboard Broadcast to all users</figcaption>
 
-<img src="/readme_assets/images/db_log_4.png">
+<img src="/assets/images/db_log_4.png">
 <figcaption align="center">Database Log on Updating Game Completion Time and Winner</figcaption>
 
 7. **Client Winner Display**: The client receives and displays the winner's details and their successful expression on the GUI, offering congratulations. Also, this triggers players of the session to update their personal profile and corresponding panel, as it changes.
 
 8. **Client Leaderboard Update**: The client receives updated leaderboard information and refreshes the GUI, to reflect the new standings.
 
-<img src="/readme_assets/images/client_log_5.png">
+<img src="/assets/images/client_log_5.png">
 <figcaption align="center">Game Session End Message & LeaderBoard Update Message Received</figcaption>
 
-<img src="/readme_assets/images/game_4.png">
+<img src="/assets/images/game_4.png">
 <figcaption align="center">Display of Game Winner for Session Players (left) & Global Leaderboard Update (right)</figcaption>
 
-<img src="/readme_assets/images/game_5.png">
+<img src="/assets/images/game_5.png">
 <figcaption align="center">Personal Profile Update for Session Player</figcaption>
 
 9. The communication design utilizes JMS queues with selectors on unique Receiver IDs for secure P2P communication between the client and server, ensuring that messages are delivered to and received from the correct parties, thereby enhancing the reliability and privacy of interactions. Meanwhile, the use of JMS topics with session ID selectors allows for efficient, targeted broadcasting to all players within a specific game room, or all online players.
@@ -357,32 +357,32 @@ Upon the current status is `WAITING_FOR_PLAYERS_TO_READY` and receiving a readin
 
 These settings ensure that the game session can allow fill up if all players join within the initial 10-second window, and can start quickly after this window if the minimum player requirement is met.
 
-<img src="/readme_assets/images/game_3.png">
+<img src="/assets/images/game_3.png">
 <figcaption align="center">Game with 2 Players</figcaption>
 
-<img src="/readme_assets/images/game_4.png">
+<img src="/assets/images/game_4.png">
 <figcaption align="center">Game with 2 Players (Win)</figcaption>
 
-<img src="/readme_assets/images/game_6.png">
+<img src="/assets/images/game_6.png">
 <figcaption align="center">Game with 3 Players</figcaption>
 
-<img src="/readme_assets/images/game_7.png">
+<img src="/assets/images/game_7.png">
 <figcaption align="center">Game with 3 Players(Win)</figcaption>
 
-<img src="/readme_assets/images/game_8.png">
+<img src="/assets/images/game_8.png">
 <figcaption align="center">Game with 4 Players</figcaption>
 
-<img src="/readme_assets/images/game_9.png">
+<img src="/assets/images/game_9.png">
 <figcaption align="center">Game with 4 Players (Win)</figcaption>
 
 #### 2.2.3 Multi-Session Support (Session Management)
 
 The game suppor multiple session (game room). Image below shows the 4 game session playing at the same time, each group have 2 users. The sessions are `TOP LEFT`, `TOP RIGHT`, `BOTTOM LEFT`, `BOTTOM RIGHT`.
 
-<img src="/readme_assets/images/game_10.png">
+<img src="/assets/images/game_10.png">
 <figcaption align="center">Game with 4 Room</figcaption>
 
-<img src="/readme_assets/images/game_11.png">
+<img src="/assets/images/game_11.png">
 <figcaption align="center">Game with 4 Room (4 Separate Win)</figcaption>
 
 ### 2.3 Answer Evaluation and Validation
@@ -396,7 +396,7 @@ The section above already shows the ability of app handling a string expression,
 
 Please view these cases from left to right in the image below:
 
-<img src="/readme_assets/images/game_12.png">
+<img src="/assets/images/game_12.png">
 <figcaption align="center">Game with 4 Room</figcaption>
 
 Note: for the all these cases, the game will allow player to have more trial by click the `OK` button.
