@@ -7,7 +7,7 @@ This project utilizes technologies such as **RMI**, **JDBC**, **JNDI**, **JMS**,
 
 ## 2. Environment Set Up
 
-Please follow this [tutorial](/doc/setup.md) to set up the necessary environment before you start.
+Please follow this [Tutorial](/doc/setup.md) to set up the necessary environment before you start.
 
 ## 3. Quick Start
 
@@ -44,4 +44,5 @@ Note: You could find the `.jar` file at `/lib` directory.
 ## 6. Notes
 - Ensure all services and the database are running before starting the game server and clients.
 - The application is configured to run on localhost. Adjust the configurations if deploying on a different server or in a distributed environment.
-- For detailed report, please refer to [here](/doc/report.md).
+- For detailed report, please refer to [Here](/doc/report.md).
+- 都看到这了，说一句谢谢学长不过分吧，我亲爱的好学弟/学妹。`(๑*◡*๑)`
