@@ -31,18 +31,6 @@ if [ "$#" -eq 0 ]; then
     exit 1
 fi
 
-# Function to compile code
-compile() {
-    echo "> Removing existing built classes..."
-    mkdir -p $bin_dir
-    rm -rf $bin_dir/*
-    echo ""
-
-    echo "> Compiling the Java code..."
-    javac -cp ":$gf_client_path" -d $bin_dir -sourcepath $src_dir $src_dir/com/**/**/*.java
-    echo ""
-}
-
 # Check availability of the port and kill the process using it if necessary
 check_and_release_port() {
     echo "> Checking availability of port $port_number..."
@@ -65,6 +53,18 @@ check_and_release_port() {
     else
         echo "Port $port_number is available."
     fi
+    echo ""
+}
+
+# Function to compile code
+compile() {
+    echo "> Removing existing built classes..."
+    mkdir -p $bin_dir
+    rm -rf $bin_dir/*
+    echo ""
+
+    echo "> Compiling the Java code..."
+    javac -cp ":$gf_client_path" -d $bin_dir -sourcepath $src_dir $src_dir/com/**/**/*.java
     echo ""
 }
 
@@ -117,28 +117,26 @@ build() {
     # Copy compiled classes and resources specifically for the client
     cp -r bin/com/jpoker24/{client,common,enums,jms,ui,utils} temp_jar/client/com/jpoker24
     cp -r resources temp_jar/client
+    # Copy source files specifically for the client
+    cp -r src/com/jpoker24/{client,common,enums,jms,ui,utils} temp_jar/client/com/jpoker24
+
+    # Copy source files specifically for the server
+    cp -r src/com/jpoker24/{common,enums,handler,jms,server,utils,security} temp_jar/server/com/jpoker24
+    # Copy compiled classes and resources specifically for the server
+    cp -r bin/com/jpoker24/{common,enums,handler,jms,server,utils,security} temp_jar/server/com/jpoker24
+
+    # Write the manifest files with Class-Path for the client and server
     {
         echo "Main-Class: $client_main"
         echo "Class-Path: $mysql_connector_path $gf_client_path"
     } > temp_jar/client/META-INF/MANIFEST.MF
-
-    # Copy source files specifically for the client
-    cp -r src/com/jpoker24/{client,common,enums,jms,ui,utils} temp_jar/client/com/jpoker24
-
-    # Package the client JAR
-    (cd temp_jar/client && jar cvfm $client_jar META-INF/MANIFEST.MF .)
-
-    # Copy compiled classes and resources specifically for the server
-    cp -r bin/com/jpoker24/{common,enums,handler,jms,server,utils,security} temp_jar/server/com/jpoker24
     {
         echo "Main-Class: $server_main"
         echo "Class-Path: $mysql_connector_path $gf_client_path"
     } > temp_jar/server/META-INF/MANIFEST.MF
 
-    # Copy source files specifically for the server
-    cp -r src/com/jpoker24/{common,enums,handler,jms,server,utils,security} temp_jar/server/com/jpoker24
-
-    # Package the server JAR
+    # Package the client & server JAR
+    (cd temp_jar/client && jar cvfm $client_jar META-INF/MANIFEST.MF .)
     (cd temp_jar/server && jar cvfm $server_jar META-INF/MANIFEST.MF .)
 
     # Move the JAR files to the build directory
