@@ -25,7 +25,7 @@ chmod 777 ./run.sh     # Enable the start script
 2. Join a game with 2-4 users, try to form the number 24 using the four given card values and arithmetic operations (+, -, *, /).
 3. The first player to correctly form 24 wins the round.
 
-## 5. Game UI.
+## 5. Game UI
 ![GUI Overview](/assets/images/gui_overview.png)
 
 ## 6. Build Jar & Run Jar
