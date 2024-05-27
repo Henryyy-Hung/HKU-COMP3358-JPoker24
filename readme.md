@@ -25,10 +25,10 @@ chmod 777 ./run.sh     # Enable the start script
 2. Join a game with 2-4 users, try to form the number 24 using the four given card values and arithmetic operations (+, -, *, /).
 3. The first player to correctly form 24 wins the round.
 
-Below shows the overview on the game UI.
+## 5. Game UI.
 ![GUI Overview](/assets/images/gui_overview.png)
 
-## 5. Build Jar & Run Jar
+## 6. Build Jar & Run Jar
 
 Open termials under root directory of the project.
 
@@ -41,7 +41,7 @@ chmod 777 ./run.sh     # Enable the start script
 Note: You could find the `.jar` file at `/lib` directory.
 
 
-## 6. Notes
+## 7. Notes
 - Ensure all services and the database are running before starting the game server and clients.
 - The application is configured to run on localhost. Adjust the configurations if deploying on a different server or in a distributed environment.
 - For detailed report, please refer to [Here](/doc/report.md).
