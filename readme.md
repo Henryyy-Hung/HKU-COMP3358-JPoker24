@@ -22,7 +22,7 @@ chmod 777 ./run.sh     # Enable the start script
 
 ## 4. Playing the Game
 1. Log in or register a new account.
-2. Join a game with 2-4 users, try to form the number 24 using the four given card values and arithmetic operations (+, -, *, /).
+2. Join a game with 2-4 users, try to form the number 24 using the four given card values and arithmetic operations `(+, -, *, /)`.
 3. The first player to correctly form 24 wins the round.
 
 ## 5. Game UI
